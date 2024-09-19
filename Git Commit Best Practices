@@ -1,0 +1,32 @@
+Git Commit Best Practices
+https://gist.github.com/luismts/495d982e8c5b1a0ced4a57cf3d93cf60
+
+Basics
+
+Write something basic about the commit you are adding. The line should be under 50 characters. It should start with a Capital letter. There should be no punctuation
+
+Example commit titles:
+
+Completion for issue #24
+
+Resolution for issue #24
+
+Fix for issue #24
+
+Solution for issue #24
+
+Added new library for issue #24
+
+Created new views for issue #24
+
+Fixed navigation bug in issue #24
+
+
+
+Description:
+Optional
+
+This can describe the work done. 
+
+Example:
+I finished the work on the new view. Testing still needs to be completed. The views are not connected to any database models. Only stubs.
