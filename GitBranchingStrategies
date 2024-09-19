@@ -1,0 +1,17 @@
+Visit the URL for good branching strategies: https://nvie.com/posts/a-successful-git-branching-model/
+
+Basically, never commit to the main branch unless specified.
+
+Create a new branch for each sprint. 
+For each issue in the backlog, create a separate branch from the sprint branch. Name that branch
+with either the backlog issue and your name or a very brief description with your name.
+
+Example branch name:
+issue34bobjack
+issue21jinyu
+bugfix22bobjack
+
+Once the item is placed in review, it will be analyzed, then merged into the sprint branch.
+Afterward the issue will be considered Done.
+
+Remember to always get a fresh pull from the sprint branch or else you may have merging nightmares.
