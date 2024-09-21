@@ -1,0 +1,29 @@
+Sprint Practices and Expectations
+
+During a sprint, the primary objective is to move all items
+from the left side of the board to the right side. To contribute,
+you are expected to review the board and assign a task to yourself.
+Please note that multiple team members can collaborate on a single task.
+Once you have selected a task, move it to the "In Progress" section.
+
+Upon completing the task, kindly add a comment in the task description
+detailing the work you accomplished. When you commit your work,
+you will see a hash number, such as: 123cff123asf125f10f.
+Please copy this hash number and paste it into the comment section
+of the task. This will link the issue to the corresponding work.
+
+After committing your changes and completing the task, move the item
+to the "Review" column. The Scrum Master or another designated person
+will then review the submitted code for completeness and compliance.
+If everything is satisfactory, the task will be moved to "Done" and
+merged into the development branch.
+
+If a task is too complex, you may break it into smaller components.
+In such cases, please create a new issue, describe the required work,
+and include a link to the original issue in the description. Move this
+new issue into the sprint, but do not assign it a story point, as
+this will impact the sprint burndown. Additionally, avoid modifying
+story points during an active sprint, as this too can affect the
+burndown chart.
+
+Thank you, and happy coding!
