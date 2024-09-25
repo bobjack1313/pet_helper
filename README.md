@@ -32,10 +32,9 @@ Android SDK 35 or higher
 
 ## Installation
 Clone this repository:
-
 '''bash
 git clone https://github.com/bobjack1313/pet_helper.git
-
+'''
 Open the project in Android Studio.
 
 Build and run the project on an emulator or physical device.
