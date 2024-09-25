@@ -10,31 +10,41 @@
 Pet Management:
 * Add, update, remove and archive pets
 * Store detailed pet traits such as name, breed, color, age, photo and date of birth
+
 Appointments:
 * Schedule vet appointments
 * Schedule grooming services
 * Track appointment details such as date, time, reason and service provider
+
 Reminders:
 * Set care reminders for tasks like feeding, exercise, and medication
+
 Care Records:
 * Maintain a history of pet care including vaccinations, illnesses and treatments
+
 Cost Tracking:
 * Track pet-related expenses
 * View and manage costs for each pet
+
 Service Contacts:
 * Store and access contact information for vets, groomers, and other pet services
 
 ## Getting Started
 **Prerequisites**
+
 Android Studio 4.1 or higher
+
 Java 11 / Kotlin
+
 Android SDK 35 or higher
 
 ## Installation
 Clone this repository:
-'''bash
+
+```bash
 git clone https://github.com/bobjack1313/pet_helper.git
-'''
+```
+
 Open the project in Android Studio.
 
 Build and run the project on an emulator or physical device.
