@@ -7,6 +7,7 @@ plugins {
 
 kapt {
     correctErrorTypes = true
+    includeCompileClasspath = false
 }
 
 android {
