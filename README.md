@@ -1,5 +1,5 @@
 PROJECT README
-Jinyu Liu
+Jinyu Liu Bob Jack
 
 What to include in your commit files
 
