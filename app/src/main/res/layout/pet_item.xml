@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- 宠物名称 -->
+    <TextView
+        android:id="@+id/pet_name" 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pet Name"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <!-- 宠物类型 -->
+    <TextView
+        android:id="@+id/pet_type" 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pet Type"
+        android:textSize="16sp" />
+
+    <!-- 宠物年龄 -->
+    <TextView
+        android:id="@+id/pet_age" 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pet Age"
+        android:textSize="14sp"
+        android:textColor="#4CAF50" />
+
+    <!-- 宠物描述 -->
+    <TextView
+        android:id="@+id/pet_description" 
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pet Description"
+        android:textSize="14sp"
+        android:paddingTop="4dp" />
+
+</LinearLayout>

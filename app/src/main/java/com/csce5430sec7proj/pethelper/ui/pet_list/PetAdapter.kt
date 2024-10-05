@@ -1,52 +1,40 @@
-package com.csce5430sec7proj.pethelper
+package com.csce5430sec7proj.pethelper.ui.pet_list
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.csce5430sec7proj.pethelper.R
+import com.csce5430sec7proj.pethelper.ui.Pet
 
-class PetAdapter(
-    private val petList: MutableList<Pet>,
-    private val onDeleteClick: (Pet) -> Unit
-) : RecyclerView.Adapter<PetAdapter.PetViewHolder>() {
+class PetAdapter(private var petList: List<Pet>) : RecyclerView.Adapter<PetAdapter.PetViewHolder>() {
 
-    inner class PetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val petPhoto: ImageView = itemView.findViewById(R.id.petPhoto)
-        val petName: TextView = itemView.findViewById(R.id.petName)
-        val deletePet: ImageView = itemView.findViewById(R.id.deletePet)
+    class PetViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val nameTextView: TextView = view.findViewById(R.id.pet_name)
+        val typeTextView: TextView = view.findViewById(R.id.pet_type)
+        val ageTextView: TextView = view.findViewById(R.id.pet_age)
+        val descriptionTextView: TextView = view.findViewById(R.id.pet_description)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PetViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_pet, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.pet_item, parent, false)
         return PetViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: PetViewHolder, position: Int) {
         val pet = petList[position]
-        holder.petName.text = pet.name
-        holder.petPhoto.setImageResource(pet.photoResId)
-        holder.deletePet.setOnClickListener {
-            onDeleteClick(pet)
-        }
+        holder.nameTextView.text = pet.name
+        holder.typeTextView.text = pet.type
+        holder.ageTextView.text = "Age: ${pet.age}"
+        holder.descriptionTextView.text = pet.description
     }
 
     override fun getItemCount(): Int = petList.size
 
-    fun moveItemUp(position: Int) {
-        if (position > 0) {
-            petList.add(position - 1, petList.removeAt(position))
-            notifyItemMoved(position, position - 1)
-        }
-    }
-
-    fun moveItemDown(position: Int) {
-        if (position < petList.size - 1) {
-            petList.add(position + 1, petList.removeAt(position))
-            notifyItemMoved(position, position + 1)
-        }
+    // 更新适配器的数据并刷新
+    fun updatePetList(newPetList: List<Pet>) {
+        petList = newPetList
+        notifyDataSetChanged()
     }
 }

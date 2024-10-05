@@ -4,34 +4,44 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.csce5430sec7proj.pethelper.databinding.FragmentHomeBinding
+import com.csce5430sec7proj.pethelper.ui.Pet
+import com.csce5430sec7proj.pethelper.ui.pet_list.PetAdapter
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
-    override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View {
-        val homeViewModel =
-                ViewModelProvider(this).get(HomeViewModel::class.java)
+    private val petSharedViewModel: PetSharedViewModel by activityViewModels()
+    private lateinit var petAdapter: PetAdapter
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
+        // 初始化 RecyclerView
+        val recyclerView: RecyclerView = binding.recyclerView
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        // 初始化适配器并设置给 RecyclerView
+        petAdapter = PetAdapter(listOf())
+        recyclerView.adapter = petAdapter
+
+        // 监听 petList 数据的变化并更新适配器的数据
+        petSharedViewModel.petList.observe(viewLifecycleOwner, Observer { petList ->
+            petAdapter.updatePetList(petList)
+        })
+
         return root
     }
 
