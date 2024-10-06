@@ -4,5 +4,10 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_pet_list">Pet List</string>
+    <string name="name_hint">Name</string>
+    <string name="species_hint">Species</string>
+    <string name="breed_hint">Breed</string>
+    <string name="select_date_of_birth">Select Date of Birth</string>
+    <string name="save">Save</string>
 
 </resources>
