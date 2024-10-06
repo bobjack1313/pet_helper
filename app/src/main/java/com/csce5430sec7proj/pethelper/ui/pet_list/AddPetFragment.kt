@@ -1,11 +1,10 @@
 package com.csce5430sec7proj.pethelper.ui.pet_list
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.Switch
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -13,6 +12,7 @@ import com.csce5430sec7proj.pethelper.R
 import com.csce5430sec7proj.pethelper.databinding.FragmentAddPetBinding
 import com.csce5430sec7proj.pethelper.ui.Pet
 import com.csce5430sec7proj.pethelper.ui.home.PetSharedViewModel
+import java.util.Calendar
 
 // TODO: Deprecated. Remove.
 class AddPetFragment : Fragment() {
@@ -36,7 +36,30 @@ class AddPetFragment : Fragment() {
             savePetData()
         }
 
+        // 设置“选择出生日期”按钮点击事件
+        binding.petDob.setOnClickListener {
+            showDatePickerDialog()
+        }
+
         return root
+    }
+
+    private fun showDatePickerDialog() {
+        // 获取当前日期
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        // 创建 DatePickerDialog，并设置日期选择后的回调
+        val datePickerDialog = DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
+            // 用户选择日期后的回调，将日期显示在按钮上
+            val selectedDate = "$selectedYear-${selectedMonth + 1}-$selectedDay"
+            binding.petDob.text = selectedDate
+        }, year, month, day)
+
+        // 显示 DatePickerDialog
+        datePickerDialog.show()
     }
 
     private fun savePetData() {
@@ -47,14 +70,15 @@ class AddPetFragment : Fragment() {
         val petWeight = binding.petWeight.text.toString()
         val isNeuteredOrSpayed = binding.petNeutered.isChecked
         val petAggressiveness = binding.petAggressiveLevel.value.toInt()
+        val petDob = binding.petDob.text.toString() // 获取选择的出生日期
 
         // 检查是否所有字段都已填写
-        if (petName.isNotEmpty() && petSpecies.isNotEmpty() && petBreed.isNotEmpty() && petWeight.isNotEmpty()) {
+        if (petName.isNotEmpty() && petSpecies.isNotEmpty() && petBreed.isNotEmpty() && petWeight.isNotEmpty() && petDob.isNotEmpty()) {
             // 创建一个 Pet 数据对象
             val newPet = Pet(
                 name = petName,
                 type = "$petSpecies / $petBreed", // 组合种类和品种
-                age = "Unknown", // 示例值
+                age = petDob, // 使用选择的出生日期作为宠物年龄
                 description = "Weight: $petWeight kg, Neutered/Spayed: $isNeuteredOrSpayed, Aggressiveness: $petAggressiveness"
             )
 
