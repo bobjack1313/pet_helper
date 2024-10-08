@@ -1,7 +1,11 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-}
+    id ("kotlin-android")
+    id ("kotlin-parcelize")
+    }
+
+
 
 android {
     namespace = "com.csce5430sec7proj.pethelper"
