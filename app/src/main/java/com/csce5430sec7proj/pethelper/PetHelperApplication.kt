@@ -4,7 +4,7 @@ import android.app.Application
 import android.util.Log
 
 
-class PetHelperApp : Application() {
+class PetHelperApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         Log.d("PetHelperApp", "Application started")
