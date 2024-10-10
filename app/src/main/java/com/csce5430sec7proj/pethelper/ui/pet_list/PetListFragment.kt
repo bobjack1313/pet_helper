@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.csce5430sec7proj.pethelper.R
 import com.csce5430sec7proj.pethelper.databinding.FragmentPetListBinding
 
+// TODO: Deprecated. Remove.
 class PetListFragment : Fragment() {
 
     private var _binding: FragmentPetListBinding? = null
