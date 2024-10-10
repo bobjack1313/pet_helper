@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.csce5430sec7proj.pethelper.R
 
+// TODO: Deprecated. Remove.
 class PetAdapter(
     private val petList: MutableList<Pet>,
     private val onDeleteClick: (Pet) -> Unit

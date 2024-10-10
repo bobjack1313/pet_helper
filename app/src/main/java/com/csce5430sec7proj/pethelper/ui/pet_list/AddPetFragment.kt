@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.csce5430sec7proj.pethelper.databinding.FragmentAddPetBinding
 import java.util.*
 
+// TODO: Deprecated. Remove.
 class AddPetFragment : Fragment() {
 
     private var _binding: FragmentAddPetBinding? = null
