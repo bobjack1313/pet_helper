@@ -10,11 +10,6 @@ import com.csce5430sec7proj.pethelper.ui.Pet
 
 // TODO: Deprecated. Remove.
 class PetAdapter(
-    private val petList: MutableList<Pet>,
-    private val onDeleteClick: (Pet) -> Unit
-) : RecyclerView.Adapter<PetAdapter.PetViewHolder>() {
-class PetAdapter(private var petList: List<Pet>) : RecyclerView.Adapter<PetAdapter.PetViewHolder>() {
-class PetAdapter(
     private var petList: List<Pet>,
     private val onItemClick: (Pet) -> Unit // 添加点击事件的 Lambda 表达式
 ) : RecyclerView.Adapter<PetAdapter.PetViewHolder>() {
@@ -46,15 +41,11 @@ class PetAdapter(
 
     override fun onBindViewHolder(holder: PetViewHolder, position: Int) {
         val pet = petList[position]
-        holder.nameTextView.text = pet.name
-        holder.typeTextView.text = pet.type
-        holder.ageTextView.text = "Age: ${pet.age}"
-        holder.descriptionTextView.text = pet.description
+        holder.bind(pet, onItemClick) // 传递 pet 和 onItemClick 函数
     }
 
     override fun getItemCount(): Int = petList.size
 
-    // 更新适配器的数据并刷新
     fun updatePetList(newPetList: List<Pet>) {
         petList = newPetList
         notifyDataSetChanged()
