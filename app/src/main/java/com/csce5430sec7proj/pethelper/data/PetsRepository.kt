@@ -1,34 +1,90 @@
 package com.csce5430sec7proj.pethelper.data
 
+import com.csce5430sec7proj.pethelper.data.daos.AppointmentDao
+import com.csce5430sec7proj.pethelper.data.daos.PetDao
+import com.csce5430sec7proj.pethelper.data.daos.RecordDao
+import com.csce5430sec7proj.pethelper.data.daos.VendorDao
+import com.csce5430sec7proj.pethelper.data.entities.Appointment
 import com.csce5430sec7proj.pethelper.data.entities.Pet
-import kotlinx.coroutines.flow.Flow
+import com.csce5430sec7proj.pethelper.data.entities.Record
+import com.csce5430sec7proj.pethelper.data.entities.Vendor
 
-/**
- * Repository that provides insert, update, delete, and retrieve of [Pet] from a given data source.
- */
-interface PetsRepository {
-    /**
-     * Retrieve all the pets from the the given data source.
-     */
-    fun getAllPetsStream(): Flow<List<Pet>>
 
-    /**
-     * Retrieve an pet from the given data source that matches with the [id].
-     */
-    fun getPetsStream(id: Int): Flow<Pet?>
+class PetRepository(
+    private val appointmentDao: AppointmentDao,
+    private val petDao: PetDao,
+    private val recordDao: RecordDao,
+    private val vendorDao: VendorDao
+) {
+    // Pets
+    val getPets = petDao.getAll()
+    fun getPet(id: Int) = petDao.getPet(id)
 
-    /**
-     * Insert pet in the data source
-     */
-    suspend fun insertPet(pet: Pet)
+    suspend fun insertPet(pet: Pet) {
+        petDao.insert(pet)
+    }
+    suspend fun updatePet(pet: Pet) {
+        petDao.update(pet)
+    }
+    suspend fun deletePet(pet: Pet) {
+       petDao.delete(pet)
+    }
 
-    /**
-     * Delete pet from the data source
-     */
-    suspend fun deletePet(pet: Pet)
+    // Appointments
+    val getAppointments = appointmentDao.getAll()
+    fun getAppointment(id: Int) = appointmentDao.getAppointment(id)
 
-    /**
-     * Update pet in the data source
-     */
-    suspend fun updatePet(pet: Pet)
+    suspend fun insertAppointment(appointment: Appointment) {
+        appointmentDao.insert(appointment)
+    }
+    suspend fun updateAppointment(appointment: Appointment) {
+        appointmentDao.update(appointment)
+    }
+    suspend fun deleteAppointment(appointment: Appointment) {
+        appointmentDao.delete(appointment)
+    }
+
+    val getRecordsWithPetAndVendor = recordDao.getRecordsWithPetAndVendor()
+    fun getRecordsWithPetAndVendorFilteredByPet(id: Int) = recordDao
+        .getRecordsWithPetAndVendorFilteredByPetId(id)
+    fun getRecordsWithPetAndVendorFilteredByVendor(id: Int) = recordDao
+        .getRecordsWithPetAndVendorFilteredByVendorId(id)
+    fun getRecordWithPetAndVendorFilteredByRecord(id: Int) = recordDao
+        .getRecordWithPetAndVendorFilteredById(id)
+
+    // Records
+    val getRecords = recordDao.getAll()
+    fun getRecord(id: Int) = recordDao.getRecord(id)
+
+    suspend fun insertRecord(record: Record) {
+        recordDao.insert(record)
+    }
+    suspend fun updateRecord(record: Record) {
+        recordDao.update(record)
+    }
+    suspend fun deleteRecord(record: Record) {
+        recordDao.delete(record)
+    }
+
+    val getAppointmentsWithPetAndVendor = appointmentDao.getAppointmentsWithPetAndVendor()
+    fun getAppointmentsWithPetAndVendorFilteredByPet(id: Int) = appointmentDao
+        .getAppointmentsWithPetAndVendorFilteredByPetId(id)
+    fun getAppointmentsWithPetAndVendorFilteredByVendor(id: Int) = appointmentDao
+        .getAppointmentsWithPetAndVendorFilteredByVendorId(id)
+    fun getAppointmentWithPetAndVendorFilteredByAppointment(id: Int) = appointmentDao
+        .getAppointmentWithPetAndVendorFilteredById(id)
+
+    // Vendors
+    val getVendors = vendorDao.getAll()
+    fun getVendor(id: Int) = vendorDao.getVendor(id)
+
+    suspend fun insertVendor(vendor: Vendor) {
+        vendorDao.insert(vendor)
+    }
+    suspend fun updateVendor(vendor: Vendor) {
+        vendorDao.update(vendor)
+    }
+    suspend fun deleteVendor(vendor: Vendor) {
+        vendorDao.delete(vendor)
+    }
 }

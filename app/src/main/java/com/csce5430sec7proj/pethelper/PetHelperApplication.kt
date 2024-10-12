@@ -8,5 +8,6 @@ class PetHelperApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         Log.d("PetHelperApp", "Application started")
+        Graph.provide(this)
     }
 }

@@ -15,7 +15,7 @@ import com.csce5430sec7proj.pethelper.PetHelperApplication
 //import com.csce5430sec7proj.pethelper.ui.pet.PetEntryViewModel
 
 /**
- * Provides Factory to create instance of ViewModel for the entire Inventory app
+ * Provides Factory to create instance of ViewModel for the entire app
  */
 object AppViewModelProvider {
 //    val Factory = viewModelFactory {

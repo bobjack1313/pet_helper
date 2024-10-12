@@ -31,7 +31,8 @@ fun PetHelperTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
-        content = content
+        content = content,
+        shapes = Shapes
     )
 }
 private val DarkColorScheme = darkColorScheme(

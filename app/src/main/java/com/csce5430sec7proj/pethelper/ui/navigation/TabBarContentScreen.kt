@@ -8,11 +8,11 @@ import com.csce5430sec7proj.pethelper.ui.records.RecordsScreen
 import com.csce5430sec7proj.pethelper.ui.settings.SettingsScreen
 
 @Composable
-fun TabBarContentScreen(modifier: Modifier = Modifier, selectedIndex : Int) {
-    when(selectedIndex){
-        0-> PetsScreen()
-        1-> RecordsScreen()
-        2-> NotificationScreen()
-        3-> SettingsScreen()
+fun TabBarContentScreen(modifier: Modifier = Modifier, selectedIndex: Int, onNavigate: (Int) -> Unit) {
+    when (selectedIndex) {
+        0 -> PetsScreen(onNavigate = onNavigate) // Pass the onNavigate parameter
+        1 -> RecordsScreen()
+        2 -> NotificationScreen()
+        3 -> SettingsScreen()
     }
 }

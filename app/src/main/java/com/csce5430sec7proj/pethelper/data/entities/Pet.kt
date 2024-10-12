@@ -1,5 +1,7 @@
 package com.csce5430sec7proj.pethelper.data.entities
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.sql.Date
 
@@ -7,7 +9,9 @@ import java.sql.Date
 // More info at
 // https://developer.android.com/training/data-storage/room/defining-data
 
+@Entity(tableName = "pets")
 data class Pet(
+    @ColumnInfo(name = "pet_id")
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     val name: String,

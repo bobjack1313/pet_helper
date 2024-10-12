@@ -40,6 +40,13 @@ fun MainNavScreen(modifier: Modifier = Modifier) {
     // State to track the selected tab index
     var selectedTabIndex by remember { mutableIntStateOf(0) }
 
+    // Define a simple onNavigate function
+    val onNavigate: (Int) -> Unit = { screenId ->
+        // Handle navigation logic here, e.g., logging or other actions
+        // This can be modified to suit your navigation needs
+        println("Navigating to screen with ID: $screenId")
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
@@ -68,6 +75,7 @@ fun MainNavScreen(modifier: Modifier = Modifier) {
             }
         }
     ) { innerPadding ->
-        TabBarContentScreen(modifier = Modifier.padding(innerPadding),selectedTabIndex)
+        TabBarContentScreen(modifier = Modifier.padding(innerPadding),
+            selectedIndex = selectedTabIndex, onNavigate = onNavigate)
     }
 }
