@@ -1,7 +1,7 @@
 package com.csce5430sec7proj.pethelper.data.converters
 
 import androidx.room.TypeConverter
-import java.util.Date
+import java.sql.Date
 
 open class DateConverter {
     @TypeConverter

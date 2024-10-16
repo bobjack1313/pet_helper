@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -41,7 +42,8 @@ android {
 
 dependencies {
     implementation(libs.androidx.room.runtime)
-    annotationProcessor(libs.androidx.room.ktx)
+    ksp(libs.androidx.ksp.room)
+    implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.activity.compose)

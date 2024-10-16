@@ -34,31 +34,31 @@ interface AppointmentDao {
 
     @Query("""
         SELECT * FROM appointments AS A INNER JOIN pets AS P
-        ON A.petIdFk = P.pet_id INNER JOIN vendors AS V
-        ON A.vendorIdFk = V.vendor_id
+        ON A.pet_id_fk = P.pet_id INNER JOIN vendors AS V
+        ON A.vendor_id_fk = V.vendor_id
     """)
     fun getAppointmentsWithPetAndVendor(): Flow<List<AppointmentsWithPetAndVendor>>
 
     @Query("""
         SELECT * FROM appointments AS A INNER JOIN pets AS P
-        ON A.petIdFk = P.pet_id INNER JOIN vendors AS V
-        ON A.vendorIdFk = V.vendor_id WHERE A.petIdFk =:petId
+        ON A.pet_id_fk = P.pet_id INNER JOIN vendors AS V
+        ON A.vendor_id_fk = V.vendor_id WHERE A.pet_id_fk =:petId
     """)
     fun getAppointmentsWithPetAndVendorFilteredByPetId(petId: Int):
             Flow<List<AppointmentsWithPetAndVendor>>
 
     @Query("""
         SELECT * FROM appointments AS A INNER JOIN pets AS P
-        ON A.petIdFk = P.pet_id INNER JOIN vendors AS V
-        ON A.vendorIdFk = V.vendor_id WHERE A.vendorIdFk =:vendorId
+        ON A.pet_id_fk = P.pet_id INNER JOIN vendors AS V
+        ON A.vendor_id_fk = V.vendor_id WHERE A.vendor_id_fk =:vendorId
     """)
     fun getAppointmentsWithPetAndVendorFilteredByVendorId(vendorId: Int):
             Flow<List<AppointmentsWithPetAndVendor>>
 
     @Query("""
         SELECT * FROM appointments AS A INNER JOIN pets AS P
-        ON A.petIdFk = P.pet_id INNER JOIN vendors AS V
-        ON A.vendorIdFk = V.vendor_id WHERE A.appointment_id =:appointmentId
+        ON A.pet_id_fk = P.pet_id INNER JOIN vendors AS V
+        ON A.vendor_id_fk = V.vendor_id WHERE A.appointment_id =:appointmentId
     """)
     fun getAppointmentWithPetAndVendorFilteredById(appointmentId: Int):
             Flow<AppointmentsWithPetAndVendor>

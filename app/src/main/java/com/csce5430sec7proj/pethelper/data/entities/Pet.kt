@@ -11,15 +11,22 @@ import java.sql.Date
 
 @Entity(tableName = "pets")
 data class Pet(
-    @ColumnInfo(name = "pet_id")
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "pet_id")
     val id: Int,
+    @ColumnInfo(name = "pet_name")
     val name: String,
+    @ColumnInfo(name = "pet_breed")
     val breed: String,
+    @ColumnInfo(name = "pet_color")
     val color: String,
+    @ColumnInfo(name = "pet_age")
     val age: Int,
+    @ColumnInfo(name = "pet_date_of_birth")
     val dateOfBirth: Date,
+
     // Not sure if we need this
+    @ColumnInfo(name = "pet_aggression")
     val aggression: Double
 )
 

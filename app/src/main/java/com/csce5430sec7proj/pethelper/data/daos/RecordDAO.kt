@@ -28,36 +28,36 @@ interface RecordDao {
     @Query("SELECT * from records WHERE record_id = :id")
     fun getRecord(id: Int): Flow<Record>
 
-    @Query("SELECT * from records ORDER BY date ASC")
+    @Query("SELECT * from records ORDER BY record_date ASC")
     fun getAll(): Flow<List<Record>>
 
     @Query("""
         SELECT * FROM records AS R INNER JOIN pets AS P
-        ON R.petIdFk = P.pet_id INNER JOIN vendors AS V
-        ON R.vendorIdFk = V.vendor_id
+        ON R.pet_id_fk = P.pet_id INNER JOIN vendors AS V
+        ON R.vendor_id_fk = V.vendor_id
     """)
     fun getRecordsWithPetAndVendor(): Flow<List<RecordsWithPetAndVendor>>
 
     @Query("""
         SELECT * FROM records AS R INNER JOIN pets AS P
-        ON R.petIdFk = P.pet_id INNER JOIN vendors AS V
-        ON R.vendorIdFk = V.vendor_id WHERE R.petIdFk =:petId
+        ON R.pet_id_fk = P.pet_id INNER JOIN vendors AS V
+        ON R.vendor_id_fk = V.vendor_id WHERE R.pet_id_fk =:petId
     """)
     fun getRecordsWithPetAndVendorFilteredByPetId(petId: Int):
             Flow<List<RecordsWithPetAndVendor>>
 
     @Query("""
         SELECT * FROM records AS R INNER JOIN pets AS P
-        ON R.petIdFk = P.pet_id INNER JOIN vendors AS V
-        ON R.vendorIdFk = V.vendor_id WHERE R.vendorIdFk =:vendorId
+        ON R.pet_id_fk = P.pet_id INNER JOIN vendors AS V
+        ON R.vendor_id_fk = V.vendor_id WHERE R.vendor_id_fk =:vendorId
     """)
     fun getRecordsWithPetAndVendorFilteredByVendorId(vendorId: Int):
             Flow<List<RecordsWithPetAndVendor>>
 
     @Query("""
         SELECT * FROM records AS R INNER JOIN pets AS P
-        ON R.petIdFk = P.pet_id INNER JOIN vendors AS V
-        ON R.vendorIdFk = V.vendor_id WHERE R.record_id =:recordId
+        ON R.pet_id_fk = P.pet_id INNER JOIN vendors AS V
+        ON R.vendor_id_fk = V.vendor_id WHERE R.record_id =:recordId
     """)
     fun getRecordWithPetAndVendorFilteredById(recordId: Int):
             Flow<RecordsWithPetAndVendor>

@@ -15,11 +15,13 @@ class MainActivity : ComponentActivity() {
          Room.databaseBuilder(
              applicationContext,
              PetHelperDatabase::class.java,
-             name = "pethelper.db"
+             name = "pethelper-db"
          ).build()
      }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Graph.provide(this)
+
         setContent {
             PetHelperTheme {
                 // Main content of the app with tab bar

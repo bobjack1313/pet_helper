@@ -42,7 +42,7 @@ abstract class PetHelperDatabase : RoomDatabase() {
                 Room.databaseBuilder(
                     context,
                     PetHelperDatabase::class.java,
-                    "pethelper_db")
+                    "pethelper-db")
                     .build()
                     .also { Instance = it }
             }

@@ -7,12 +7,17 @@ import java.sql.Date
 
 @Entity(tableName = "records")
 data class Record(
-    @ColumnInfo(name = "record_id")
     @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "record_id")
     val id: Int = 0,
+    @ColumnInfo(name = "pet_id_fk")
     val petIdFk: Int = 0,
+    @ColumnInfo(name = "record_description")
     val description: String,
+    @ColumnInfo(name = "record_date")
     val date: Date,
+    @ColumnInfo(name = "vendor_id_fk")
     val vendorIdFk: Int = 0,
+    @ColumnInfo(name = "record_cost")
     val cost: Int = 0
 )

@@ -1,5 +1,5 @@
 [versions]
-agp = "8.7.0"
+agp = "8.7.1"
 kotlin = "2.0.20"
 ksp = "2.0.20-1.0.24"
 coreKtx = "1.13.1"
@@ -21,7 +21,7 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleKtx" }
 
 #Room
-ksp = { group = "androidx.room", name = "room-compiler", version.ref = "roomVersion" }
+androidx-ksp-room = { group = "androidx.room", name = "room-compiler", version.ref = "roomVersion" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomVersion" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomVersion" }
 
@@ -58,4 +58,4 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id =  "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize"  }
-kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

@@ -27,7 +27,7 @@ interface PetDao {
     @Query("SELECT * from pets WHERE pet_id = :id")
     fun getPet(id: Int): Flow<Pet>
 
-    @Query("SELECT * from pets ORDER BY name ASC")
+    @Query("SELECT * from pets ORDER BY pet_name ASC")
     fun getAll(): Flow<List<Pet>>
 }
 

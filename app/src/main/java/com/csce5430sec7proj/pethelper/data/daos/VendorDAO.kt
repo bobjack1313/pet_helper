@@ -25,7 +25,7 @@ interface VendorDao {
     @Query("SELECT * from vendors WHERE vendor_id = :id")
     fun getVendor(id: Int): Flow<Vendor>
 
-    @Query("SELECT * from vendors ORDER BY name ASC")
+    @Query("SELECT * from vendors ORDER BY vendor_name ASC")
     fun getAll(): Flow<List<Vendor>>
 }
 
