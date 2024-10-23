@@ -77,5 +77,13 @@ fun MainNavScreen(modifier: Modifier = Modifier) {
     ) { innerPadding ->
         TabBarContentScreen(modifier = Modifier.padding(innerPadding),
             selectedIndex = selectedTabIndex, onNavigate = onNavigate)
+
+        // Display content based on selected tab
+        when (selectedTabIndex) {
+            0 -> PetsNavHost(modifier = Modifier.padding(innerPadding))
+            1 -> RecordsNavHost(modifier = Modifier.padding(innerPadding))
+            2 -> NotificationsNavHost(modifier = Modifier.padding(innerPadding))
+            3 -> SettingsNavHost(modifier = Modifier.padding(innerPadding))
+        }
     }
 }

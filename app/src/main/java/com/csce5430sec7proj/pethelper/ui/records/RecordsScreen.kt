@@ -13,7 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun RecordsScreen(modifier: Modifier = Modifier) {
+fun RecordsScreen(modifier: Modifier = Modifier, onNavigate: () -> Unit) {
     Column(
         modifier = modifier
             .fillMaxSize()

@@ -17,7 +17,7 @@ import com.csce5430sec7proj.pethelper.PetHelperApplication
 /**
  * Provides Factory to create instance of ViewModel for the entire app
  */
-object AppViewModelProvider {
+//object AppViewModelProvider {
 //    val Factory = viewModelFactory {
 //        // Initializer for PetEditViewModel
 //        initializer {
@@ -42,11 +42,11 @@ object AppViewModelProvider {
 ////            HomeViewModel()
 //        }
 //    }
-}
-
-/**
- * Extension function to queries for [Application] object and returns an instance of
- * [PetHelperApplication].
- */
-fun CreationExtras.petHelperApplication(): PetHelperApplication =
-    (this[AndroidViewModelFactory.APPLICATION_KEY] as PetHelperApplication)
+//}
+//
+///**
+// * Extension function to queries for [Application] object and returns an instance of
+// * [PetHelperApplication].
+// */
+//fun CreationExtras.petHelperApplication(): PetHelperApplication =
+//    (this[AndroidViewModelFactory.APPLICATION_KEY] as PetHelperApplication)
