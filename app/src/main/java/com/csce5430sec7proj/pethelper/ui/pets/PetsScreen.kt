@@ -70,7 +70,6 @@ fun PetsScreen(
             )
         )
     }
-
     // If the pets list is empty, show a centered "Add Pet" button
     if (petsState.pets.isEmpty()) {
     // Check if pets list is empty and show "Add Pet" button in center
