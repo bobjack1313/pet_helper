@@ -68,4 +68,9 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.navigation.compose)
+    implementation ("androidx.compose.ui:ui:<latest_version>")
+    implementation ("androidx.compose.material:material:<latest_version>")
+    implementation ("androidx.compose.ui:ui-tooling:<latest_version>")
+    implementation ("androidx.navigation:navigation-compose:<latest_version>")
+
 }

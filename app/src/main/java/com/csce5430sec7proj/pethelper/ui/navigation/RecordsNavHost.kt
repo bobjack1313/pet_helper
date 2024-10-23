@@ -16,7 +16,12 @@ fun RecordsNavHost(modifier: Modifier = Modifier) {
         modifier = modifier
     ) {
         composable("records_screen") {
-            RecordsScreen(onNavigate = { /* Handle navigation */ })
+            RecordsScreen(
+                navController = navController,  // 传递 navController
+                onNavigate = { route ->  // 传递 onNavigate 参数
+                    navController.navigate(route)
+                }
+            )
         }
     }
 }
