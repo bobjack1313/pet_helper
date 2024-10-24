@@ -12,8 +12,11 @@ fun TabBarContentScreen(modifier: Modifier = Modifier, selectedIndex: Int, onNav
     when (selectedIndex) {
         0 -> PetsScreen(
             onNavigate = onNavigate,
+            onNavigateDetail = { // petId ->
+                // Handle the detail navigation, e.g.:
+//                navController.navigate("pet_detail_screen/$petId")
+            },
             modifier = Modifier,
-            onNavigateInLine = {  }
         )
         1 -> RecordsScreen(onNavigate = { /* Handle navigation */ })
         2 -> NotificationsScreen()

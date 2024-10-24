@@ -31,7 +31,6 @@ interface PetDao {
     fun getAll(): Flow<List<Pet>>
 }
 
-
 /*
 Relationships:
 • 1-to-many with VetAppointment

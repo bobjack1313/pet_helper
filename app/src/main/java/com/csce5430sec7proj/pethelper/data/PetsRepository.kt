@@ -23,8 +23,9 @@ class PetRepository(
     suspend fun insertPet(pet: Pet) {
         petDao.insert(pet)
     }
-    suspend fun updatePet(pet: Pet) {
+    suspend fun updatePet(pet: Pet): Int {
         petDao.update(pet)
+        return pet.id
     }
     suspend fun deletePet(pet: Pet) {
        petDao.delete(pet)
