@@ -16,7 +16,13 @@ fun RecordsNavHost(modifier: Modifier = Modifier) {
         modifier = modifier
     ) {
         composable("records_screen") {
-            RecordsScreen(onNavigate = { /* Handle navigation */ })
+            RecordsScreen(
+                onNavigate = { route ->
+                    navController.navigate(route)
+                }
+            )
         }
+
+        // TODO: Records navigation needs built out for each of the tabs, i think
     }
 }

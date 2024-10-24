@@ -21,9 +21,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 
-// TODO: Lets animate the tab bar items when selected
-// https://proandroiddev.com/jetpack-compose-tutorial-animated-navigation-bar-354411c679c8
-
 // Main navigation screen of the app with tab bar
 @Composable
 fun MainNavScreen(modifier: Modifier = Modifier) {
@@ -32,20 +29,14 @@ fun MainNavScreen(modifier: Modifier = Modifier) {
     var notificationsBadgeCount by remember { mutableIntStateOf(5) }
 
     val tabItemList = listOf(
-        NavTabItem("Pets", Icons.Default.AccountCircle,0),
+        NavTabItem("Pets", Icons.Default.AccountCircle, 0),
         NavTabItem("Records", Icons.Default.Create, 0),
         NavTabItem("Notifications", Icons.Default.Notifications, notificationsBadgeCount),
-        NavTabItem("Settings", Icons.Default.Settings,0),
+        NavTabItem("Settings", Icons.Default.Settings, 0),
     )
+    
     // State to track the selected tab index
     var selectedTabIndex by remember { mutableIntStateOf(0) }
-
-    // Define a simple onNavigate function
-    val onNavigate: (Int) -> Unit = { screenId ->
-        // Handle navigation logic here, e.g., logging or other actions
-        // This can be modified to suit your navigation needs
-        println("Navigating to screen with ID: $screenId")
-    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -53,16 +44,17 @@ fun MainNavScreen(modifier: Modifier = Modifier) {
             NavigationBar {
                 tabItemList.forEachIndexed { index, navItem ->
                     NavigationBarItem(
-                        selected =  selectedTabIndex == index ,
+                        selected = selectedTabIndex == index,
                         onClick = {
                             selectedTabIndex = index
                         },
                         icon = {
                             BadgedBox(badge = {
-                                if(navItem.badgeCount>0)
-                                    Badge(){
+                                if (navItem.badgeCount > 0) {
+                                    Badge {
                                         Text(text = navItem.badgeCount.toString())
                                     }
+                                }
                             }) {
                                 Icon(imageVector = navItem.icon, contentDescription = "Icon")
                             }
@@ -75,9 +67,6 @@ fun MainNavScreen(modifier: Modifier = Modifier) {
             }
         }
     ) { innerPadding ->
-        TabBarContentScreen(modifier = Modifier.padding(innerPadding),
-            selectedIndex = selectedTabIndex, onNavigate = onNavigate)
-
         // Display content based on selected tab
         when (selectedTabIndex) {
             0 -> PetsNavHost(modifier = Modifier.padding(innerPadding))
