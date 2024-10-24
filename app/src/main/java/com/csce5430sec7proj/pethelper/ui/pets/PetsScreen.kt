@@ -1,6 +1,7 @@
 package com.csce5430sec7proj.pethelper.ui.pets
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,97 +18,59 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import com.csce5430sec7proj.pethelper.R
-import com.csce5430sec7proj.pethelper.data.entities.Pet
-import java.sql.Date
 
 
 @Composable
 fun PetsScreen(
     modifier: Modifier = Modifier,
     onNavigate: (Int) -> Unit,
-    onNavigateInLine: (String) -> Unit
+    onNavigateDetail: (Int) -> Unit,
 ) {
-    // Using the view model
-    val petsViewModel: PetsViewModel = viewModel()
-    val petsState = petsViewModel.state.value
+    val viewModel: PetsViewModel = viewModel()
+    val petsState by viewModel.state.collectAsState()
 
-    // Temporary mock data for testing
-    val mockPets = remember {
-        mutableStateOf(
-            listOf(
-                Pet(
-                    id = 1,
-                    name = "Buddy",
-                    breed = "Golden Retriever",
-                    color = "Golden",
-                    age = 3,
-                    dateOfBirth = Date(0),  // Placeholder date (Unix epoch time)
-                    aggression = 0.1
-                ),
-                Pet(
-                    id = 2,
-                    name = "Mittens",
-                    color = "white",
-                    age = 12,
-                    dateOfBirth = Date(0),
-                    breed = "Cat",
-                    aggression = 0.0
-                ),
-                Pet(
-                    id = 3,
-                    name = "Charlie",
-                    color = "white",
-                    age = 12,
-                    dateOfBirth = Date(0),
-                    breed = "Fish",
-                    aggression = 0.0
-                )
-            )
-        )
-    }
-
-    // If the pets list is empty, show a centered "Add Pet" button
-    if (petsState.pets.isEmpty()) {
-    // Check if pets list is empty and show "Add Pet" button in center
-//    if (mockPets.value.isEmpty()) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            Button(onClick = { onNavigateInLine("pet_edit_screen") }) {
-                Text("Add Pet")
-            }
-        }
-    } else {
-        // Otherwise, display the list of pets
-        Scaffold(
-            modifier = modifier,
-            floatingActionButton = {
-                FloatingActionButton(onClick = { onNavigateInLine("pet_edit_screen") }) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Ask pet"
-                    )
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Color(0xFF1976D2)),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        if (petsState.pets.isEmpty()) {
+            Column(
+                modifier = modifier
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Button(onClick = { onNavigate(-1) }) {
+                    Text("Add Pet")
                 }
             }
-        ) { paddingValues ->
-            LazyColumn(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .padding(16.dp)
-            ) {
-                // Use mock data for now to test the layout
-                items(mockPets.value) { pet ->
-                    PetRow(petName = pet.name, onClick = {
-                        // Navigate to PetDetailScreen with the pet's ID
-                        onNavigate(pet.id)
-                    })
-                    HorizontalDivider()
+        } else {
+            Scaffold(
+                modifier = modifier,
+                floatingActionButton = {
+                    FloatingActionButton(onClick = { onNavigate(-1) }) {
+                        Icon(imageVector = Icons.Default.Add, contentDescription = "Add Pet")
+                    }
+                }
+            ) { paddingValues ->
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .padding(16.dp)
+                ) {
+                    items(petsState.pets) { pet ->
+                        PetRow(petName = pet.name, onClick = {
+                            onNavigateDetail(pet.id)
+                        })
+                    }
                 }
             }
         }
@@ -115,10 +78,11 @@ fun PetsScreen(
 }
 
 
+
 @Composable
 fun PetRow(
     petName: String,
-    onClick: () -> Unit // Pass an onClick handler as a parameter
+    onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier

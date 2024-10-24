@@ -3,7 +3,7 @@ package com.csce5430sec7proj.pethelper.data.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.sql.Date
+import java.util.Date
 
 @Entity(tableName = "records")
 data class Record(
