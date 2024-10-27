@@ -1,29 +1,35 @@
-@file:OptIn(
-    androidx.compose.material.ExperimentalMaterialApi::class,
-    androidx.compose.material3.ExperimentalMaterial3Api::class
-)
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 
 package com.csce5430sec7proj.pethelper.ui.records
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.compose.ui.window.Dialog
+import kotlinx.coroutines.launch
+import androidx.compose.foundation.clickable
+import com.csce5430sec7proj.pethelper.data.PetHelperDatabase
+import com.csce5430sec7proj.pethelper.data.daos.MedicalRecordDao
 
 @Composable
 fun RecordsScreen(
     navController: NavController,
+    medicalRecordDao: MedicalRecordDao, // 将 DAO 传递给 Composable
     onNavigate: (String) -> Unit = {}
 ) {
-    var selectedTabIndex by remember { mutableStateOf(0) }
+    val viewModelFactory = RecordsViewModelFactory(medicalRecordDao)
+    val recordsViewModel: RecordsViewModel = viewModel(factory = viewModelFactory)
+
+    val selectedTabIndex by recordsViewModel.selectedTabIndex
     val tabs = listOf("Medical Record", "Vaccinations", "Dewormings", "Physical Exams")
 
     Scaffold(
@@ -32,12 +38,8 @@ fun RecordsScreen(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                // 添加新记录逻辑
-                when (selectedTabIndex) {
-                    0 -> medicalRecords.add("New Medical Record")
-                    1 -> vaccinations.add("New Vaccination")
-                    2 -> dewormings.add("New Deworming")
-                    3 -> physicalExams.add("New Physical Exam")
+                if (!recordsViewModel.isAddDialogVisible.value) {
+                    recordsViewModel.showAddDialog()
                 }
             }) {
                 Icon(Icons.Default.Add, contentDescription = "Add Record")
@@ -50,32 +52,81 @@ fun RecordsScreen(
                 tabs.forEachIndexed { index, title ->
                     Tab(
                         selected = selectedTabIndex == index,
-                        onClick = { selectedTabIndex = index },
+                        onClick = { recordsViewModel.setSelectedTab(index) },
                         text = { Text(title) }
                     )
                 }
             }
             // 根据选中的标签展示不同的内容
             when (selectedTabIndex) {
-                0 -> MedicalRecordContent(navController)
-                1 -> VaccinationContent(navController)
-                2 -> DewormingContent(navController)
-                3 -> PhysicalExamContent(navController)
+                0 -> MedicalRecordContent(navController, recordsViewModel)
+                // 其他标签可以在此添加
+            }
+        }
+    }
+
+    if (recordsViewModel.isAddDialogVisible.value) {
+        AddRecordDialog(viewModel = recordsViewModel)
+    }
+}
+
+@Composable
+fun AddRecordDialog(viewModel: RecordsViewModel) {
+    var title by remember { mutableStateOf("") }
+    var date by remember { mutableStateOf("") }
+    val coroutineScope = rememberCoroutineScope()
+
+    Dialog(onDismissRequest = { viewModel.hideAddDialog() }) {
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            shape = MaterialTheme.shapes.medium
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(text = "Add New Record", style = MaterialTheme.typography.titleLarge)
+                TextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    label = { Text("Title") }
+                )
+                TextField(
+                    value = date,
+                    onValueChange = { date = it },
+                    label = { Text("Date") }
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = { viewModel.hideAddDialog() }) {
+                        Text("Cancel")
+                    }
+                    TextButton(onClick = {
+                        coroutineScope.launch {
+                            viewModel.addRecordToDatabase(title, date)
+                            viewModel.hideAddDialog()
+                        }
+                    }) {
+                        Text("Save")
+                    }
+                }
             }
         }
     }
 }
 
-val medicalRecords = mutableStateListOf<String>()
-val vaccinations = mutableStateListOf<String>()
-val dewormings = mutableStateListOf<String>()
-val physicalExams = mutableStateListOf<String>()
-
 @Composable
-fun MedicalRecordContent(navController: NavController) {
+fun MedicalRecordContent(navController: NavController, viewModel: RecordsViewModel) {
+    val medicalRecords = viewModel.medicalRecords
     if (medicalRecords.isEmpty()) {
-        EmptyContent("Medical Record") {
-            medicalRecords.add("New Medical Record")
+        NoRecordsContent("Medical Record") {
+            if (!viewModel.isAddDialogVisible.value) {
+                viewModel.showAddDialog()
+            }
         }
     } else {
         LazyColumn(
@@ -83,10 +134,10 @@ fun MedicalRecordContent(navController: NavController) {
         ) {
             items(medicalRecords) { record ->
                 ListItem(
-                    text = { Text(record) },
-                    secondaryText = { Text("Date: 2024-09-01") },
+                    headlineContent = { Text(record.title) },
+                    supportingContent = { Text("Date: ${record.date}") },
                     modifier = Modifier.clickable {
-                        navController.navigate("medical_record_details/$record")
+                        navController.navigate("medical_record_details/${record.title}")
                     }
                 )
                 Divider()
@@ -96,65 +147,7 @@ fun MedicalRecordContent(navController: NavController) {
 }
 
 @Composable
-fun VaccinationContent(navController: NavController) {
-    if (vaccinations.isEmpty()) {
-        EmptyContent("Vaccinations") {
-            vaccinations.add("New Vaccination")
-        }
-    } else {
-        LazyColumn(
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-        ) {
-            items(vaccinations) { vaccine ->
-                ListItem(
-                    text = { Text(vaccine) },
-                    secondaryText = { Text("Vaccination Date: 2024-10-01") },
-                    modifier = Modifier.clickable {
-                        navController.navigate("vaccination_details/$vaccine")
-                    }
-                )
-                Divider()
-            }
-        }
-    }
-}
-
-@Composable
-fun DewormingContent(navController: NavController) {
-    if (dewormings.isEmpty()) {
-        EmptyContent("Dewormings") {
-            dewormings.add("New Deworming")
-        }
-    } else {
-        LazyColumn(
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-        ) {
-            items(dewormings) { deworming ->
-                Text(text = deworming, modifier = Modifier.padding(8.dp))
-            }
-        }
-    }
-}
-
-@Composable
-fun PhysicalExamContent(navController: NavController) {
-    if (physicalExams.isEmpty()) {
-        EmptyContent("Physical Exams") {
-            physicalExams.add("New Physical Exam")
-        }
-    } else {
-        LazyColumn(
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-        ) {
-            items(physicalExams) { exam ->
-                Text(text = exam, modifier = Modifier.padding(8.dp))
-            }
-        }
-    }
-}
-
-@Composable
-fun EmptyContent(contentType: String, onAddClick: () -> Unit) {
+fun NoRecordsContent(contentType: String, onAddClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
