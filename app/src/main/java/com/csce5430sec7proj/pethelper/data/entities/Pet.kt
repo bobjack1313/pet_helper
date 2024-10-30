@@ -9,6 +9,17 @@ import java.util.Date
 // More info at
 // https://developer.android.com/training/data-storage/room/defining-data
 
+// Define the PetType enum
+enum class PetType {
+    DOG, CAT, FISH, BIRD, REPTILE, SNAKE, LIZARD, TURTLE, GERBIL, HAMSTER, PIG, CHICKEN, GOAT,
+    SHEEP, BOAR, COW, HORSE, RABBIT, RAT, INSECT, SPIDER, WORM, OTHER
+}
+
+enum class PetGender {
+    MALE, FEMALE, OTHER
+}
+
+
 @Entity(tableName = "pets")
 data class Pet(
     @PrimaryKey(autoGenerate = true)
@@ -16,18 +27,39 @@ data class Pet(
     val id: Int,
     @ColumnInfo(name = "pet_name")
     val name: String,
+    @ColumnInfo(name = "pet_type")
+    val type: PetType,
     @ColumnInfo(name = "pet_breed")
-    val breed: String,
+    val breed: String? = null,
+    @ColumnInfo(name = "person_id_fk")
+    val ownerId: Int? = null,
+    @ColumnInfo(name = "pet_image_id_fk")
+    val imageId: Int? = null,
     @ColumnInfo(name = "pet_color")
-    val color: String,
-    @ColumnInfo(name = "pet_age")
-    val age: Int,
+    val color: String? = null,
+    @ColumnInfo(name = "pet_weight")
+    val weight: Int? = null,
+    // Date of birth
     @ColumnInfo(name = "pet_date_of_birth")
-    val dateOfBirth: Date,
+    val dateOfBirth: Date? = null,
+    // Stored as a String to handle up to 15 digits
+    val microchipId: String? = null,
+    // The registry or issuing company
+    val microchipIssuer: String? = null,
+    val aggression: Double? = 0.0,
+    val gender: PetGender? = null,
+    val sterilized: Boolean? = null,
+    val allergies: List<String>? = null,
+    val diet: String? = null,
+    val training: String? = null,
+    val titles: List<String>? = null,
+    val notes: String? = null,
 
-    // Not sure if we need this
-    @ColumnInfo(name = "pet_aggression")
-    val aggression: Double
+
+
+
+    //lastVetVisit?
+    //vaccinationStatus?
 )
 
 

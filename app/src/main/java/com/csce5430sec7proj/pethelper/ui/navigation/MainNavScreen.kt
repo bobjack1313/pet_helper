@@ -20,6 +20,8 @@ import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.ui.res.stringResource
+import com.csce5430sec7proj.pethelper.R
 
 // Main navigation screen of the app with tab bar
 @Composable
@@ -29,10 +31,10 @@ fun MainNavScreen(modifier: Modifier = Modifier) {
     var notificationsBadgeCount by remember { mutableIntStateOf(5) }
 
     val tabItemList = listOf(
-        NavTabItem("Pets", Icons.Default.AccountCircle, 0),
-        NavTabItem("Records", Icons.Default.Create, 0),
-        NavTabItem("Notifications", Icons.Default.Notifications, notificationsBadgeCount),
-        NavTabItem("Settings", Icons.Default.Settings, 0),
+        NavTabItem(stringResource(id = R.string.tab_bar_pets), Icons.Default.AccountCircle, 0),
+        NavTabItem(stringResource(id = R.string.tab_bar_records), Icons.Default.Create, 0),
+        NavTabItem(stringResource(id = R.string.tab_bar_notifications), Icons.Default.Notifications, notificationsBadgeCount),
+        NavTabItem(stringResource(id = R.string.tab_bar_settings), Icons.Default.Settings, 0),
     )
     
     // State to track the selected tab index

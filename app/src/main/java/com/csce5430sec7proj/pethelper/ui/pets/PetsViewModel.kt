@@ -12,6 +12,8 @@ import kotlinx.coroutines.launch
 import androidx.compose.runtime.State
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import java.util.Calendar
+import java.util.Date
 
 
 class PetsViewModel(
@@ -81,6 +83,30 @@ class PetsViewModel(
             }
         } else {
             getPets()
+        }
+    }
+
+    // Function to calculate age in years from dateOfBirth
+    private fun calculateAge(dateOfBirth: Date?): Int? {
+        if (dateOfBirth == null) return null
+
+        val birthCalendar = Calendar.getInstance().apply { time = dateOfBirth }
+        val currentCalendar = Calendar.getInstance()
+
+        var age = currentCalendar.get(Calendar.YEAR) - birthCalendar.get(Calendar.YEAR)
+        if (currentCalendar.get(Calendar.DAY_OF_YEAR) < birthCalendar.get(Calendar.DAY_OF_YEAR)) {
+            age--
+        }
+        return age
+    }
+
+    // UI layer can access this computed property to display age for each pet
+    fun getPetWithAge(pet: Pet): Pair<Pet, Int?> {
+        if (pet.dateOfBirth != null) {
+            val age = calculateAge(pet.dateOfBirth)
+            return pet to age
+        } else {
+            return pet to null
         }
     }
 }

@@ -30,9 +30,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.csce5430sec7proj.pethelper.R
 import com.csce5430sec7proj.pethelper.data.entities.Pet
+import java.text.SimpleDateFormat
+import java.util.Locale
+
 
 @Composable
 fun PetDetailsScreen(
@@ -44,6 +48,7 @@ fun PetDetailsScreen(
     val viewModel: PetsViewModel = viewModel()
     val petState = viewModel.state.collectAsState().value
     val pet: Pet? = petState.pets.find { it.id == petId }
+    val petWithAge = pet?.let { viewModel.getPetWithAge(it) }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -51,7 +56,7 @@ fun PetDetailsScreen(
             FloatingActionButton(onClick = {
                 pet?.let { onNavigate(it.id) }
             }) {
-                Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit Pet")
+                Icon(imageVector = Icons.Default.Edit, contentDescription = stringResource(id = R.string.Edit))
             }
         }
     ) { _ ->
@@ -62,6 +67,7 @@ fun PetDetailsScreen(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Image Placeholder Box
             Box(
                 modifier = Modifier
                     .size(250.dp)
@@ -70,7 +76,6 @@ fun PetDetailsScreen(
                     .padding(8.dp)
             ) {
                 Image(
-                    // Placeholder image
                     painter = painterResource(id = R.drawable.pet_placeholder),
                     contentDescription = "Pet Picture",
                     modifier = Modifier
@@ -92,7 +97,7 @@ fun PetDetailsScreen(
             }
 
             // Details in two columns
-            pet?.let {
+            petWithAge?.let { (pet, age) ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -101,19 +106,19 @@ fun PetDetailsScreen(
                 ) {
                     Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
                         Text(
-                            text = "ID: ${it.id}",
+                            text = "ID: ${pet.id}",
                             style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp),
                             color = Color.Black
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Breed: ${it.breed}",
+                            text = "Breed: ${pet.breed ?: "Unknown"}",
                             style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp),
                             color = Color.Black
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Color: ${it.color}",
+                            text = "Color: ${pet.color ?: "Not specified"}",
                             style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp),
                             color = Color.Black
                         )
@@ -121,29 +126,31 @@ fun PetDetailsScreen(
 
                     Column(modifier = Modifier.weight(1f).padding(start = 8.dp)) {
                         Text(
-                            text = "Age: ${it.age} years",
+                            text = "Age: ${age ?: "Unknown"} years",
                             style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp),
                             color = Color.Black
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Date of Birth: ${it.dateOfBirth}",
+                            text = "Date of Birth: ${
+                                pet.dateOfBirth?.let { SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(it) }
+                                    ?: "Unknown"
+                            }",
                             style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp),
                             color = Color.Black
                         )
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        // Text(
-                        //     text = "Weight: ${it.weight} kg",
-                        //     style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp),
-                        //     color = Color.Black
-                        // )
+                        Text(
+                            text = "Weight: ${pet.weight ?: "Unknown"} kg",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp),
+                            color = Color.Black
+                        )
                     }
                 }
             } ?: run {
-                // Handle the case where pet data is not yet available
                 Text(
-                    text = "Loading pet details...",
+                    text = stringResource(id = R.string.loading_pet_details),
                     style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
                     color = Color.Gray,
                     modifier = Modifier.padding(top = 16.dp)

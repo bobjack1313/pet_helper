@@ -22,6 +22,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import com.csce5430sec7proj.pethelper.R
 
 
@@ -49,7 +50,7 @@ fun PetsScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Button(onClick = { onNavigate(-1) }) {
-                    Text("Add Pet")
+                    Text(text = stringResource(id = R.string.add_pet))
                 }
             }
         } else {
@@ -57,7 +58,7 @@ fun PetsScreen(
                 modifier = modifier,
                 floatingActionButton = {
                     FloatingActionButton(onClick = { onNavigate(-1) }) {
-                        Icon(imageVector = Icons.Default.Add, contentDescription = "Add Pet")
+                        Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(id = R.string.add_pet))
                     }
                 }
             ) { paddingValues ->
@@ -97,7 +98,7 @@ fun PetRow(
         Image(
             // Placeholder image
             painter = painterResource(id = R.drawable.pet_placeholder),
-            contentDescription = "Pet Picture",
+            contentDescription = stringResource(id = R.string.pet_picture),
             modifier = Modifier
                 // Set the size for the pet image
                 .size(100.dp)

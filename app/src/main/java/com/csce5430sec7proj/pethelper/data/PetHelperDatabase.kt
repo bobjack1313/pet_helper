@@ -5,13 +5,14 @@ import androidx.room.RoomDatabase
 import android.content.Context
 import androidx.room.Room
 import androidx.room.TypeConverters
-import com.csce5430sec7proj.pethelper.data.converters.DateConverter
 import com.csce5430sec7proj.pethelper.data.daos.AppointmentDao
 import com.csce5430sec7proj.pethelper.data.daos.PetDao
+import com.csce5430sec7proj.pethelper.data.daos.PetImageDao
 import com.csce5430sec7proj.pethelper.data.entities.Pet
 import com.csce5430sec7proj.pethelper.data.daos.RecordDao
 import com.csce5430sec7proj.pethelper.data.daos.VendorDao
 import com.csce5430sec7proj.pethelper.data.entities.Appointment
+import com.csce5430sec7proj.pethelper.data.entities.PetImage
 import com.csce5430sec7proj.pethelper.data.entities.Record
 import com.csce5430sec7proj.pethelper.data.entities.Vendor
 
@@ -23,14 +24,16 @@ import com.csce5430sec7proj.pethelper.data.entities.Vendor
 
 // Tutorial https://www.youtube.com/watch?v=voMTReNRvUA
 
-@TypeConverters(value = [DateConverter::class])
-@Database(entities = [Pet::class, Record::class, Appointment::class, Vendor::class],
-    version = 1, exportSchema = false)
+@TypeConverters(value = [Converters::class])
+@Database(entities = [Pet::class, Record::class, Appointment::class, Vendor::class,
+                     PetImage::class],
+    version = 2, exportSchema = false)
 abstract class PetHelperDatabase : RoomDatabase() {
     abstract fun petDao(): PetDao
     abstract fun recordDao(): RecordDao
     abstract fun appointmentDao(): AppointmentDao
     abstract fun vendorDao(): VendorDao
+    abstract fun petImageDao(): PetImageDao
     // Add other DAOs as needed
 
     companion object {
@@ -42,7 +45,8 @@ abstract class PetHelperDatabase : RoomDatabase() {
                 Room.databaseBuilder(
                     context,
                     PetHelperDatabase::class.java,
-                    "pethelper-db")
+                    // This causes data loss, a migration strategy may be needed
+                    "pethelper-db").fallbackToDestructiveMigration()
                     .build()
                     .also { Instance = it }
             }

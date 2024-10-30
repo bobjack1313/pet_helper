@@ -36,6 +36,9 @@ import java.util.Date
 import android.app.DatePickerDialog
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.csce5430sec7proj.pethelper.R
+import com.csce5430sec7proj.pethelper.data.entities.PetType
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -51,7 +54,9 @@ fun PetAddEditScreen(
 
     // Mutable state for the selected pet
     val selectedPetState = remember(petId) {
-        mutableStateOf(pet ?: Pet(0, "", "", "", 0, Date(), 0.0))
+        mutableStateOf(pet ?: Pet(
+            0, "", PetType.OTHER,
+        ))
     }
     val context = LocalContext.current
 
@@ -117,36 +122,44 @@ fun PetAddEditScreen(
         )
 
         // Breed Field
-        TextField(
-            value = selectedPetState.value.breed,
-            onValueChange = { selectedPetState.value = selectedPetState.value.copy(breed = it) },
-            label = { Text("Breed") },
-            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
-        )
+        selectedPetState.value.breed?.let {
+            TextField(
+                value = it,
+                onValueChange = { selectedPetState.value = selectedPetState.value.copy(breed = it) },
+                label = { Text("Breed") },
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+            )
+        }
 
         // Color Field
-        TextField(
-            value = selectedPetState.value.color,
-            onValueChange = { selectedPetState.value = selectedPetState.value.copy(color = it) },
-            label = { Text("Color") },
-            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
-        )
+        selectedPetState.value.color?.let {
+            TextField(
+                value = it,
+                onValueChange = { selectedPetState.value = selectedPetState.value.copy(color = it) },
+                label = { Text("Color") },
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+            )
+        }
 
         // Age Field
         TextField(
-            value = selectedPetState.value.age.toString(),
-            onValueChange = { selectedPetState.value = selectedPetState.value.copy(
-                age = it.toIntOrNull() ?: 0) },
-            label = { Text("Age") },
+            value = viewModel.getPetWithAge(selectedPetState.value).second?.toString() ?: "",
+            onValueChange = { /* No-op, as age is calculated */ },
+            label = { Text(stringResource(id = R.string.age_hint)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+            readOnly = true, // Making it read-only since it's a calculated field
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
         )
 
         // Date of Birth Field
         TextField(
-            value = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(selectedPetState.value.dateOfBirth),
+            value = selectedPetState.value.dateOfBirth?.let {
+                SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(it)
+            } ?: "", // Provide an empty string if dateOfBirth is null
             onValueChange = { /* No-op, since we're using a DatePicker */ },
-            label = { Text("Date of Birth") },
+            label = { Text(stringResource(id = R.string.date_of_birth_hint)) },
             readOnly = true,
             modifier = Modifier
                 .fillMaxWidth()
@@ -175,7 +188,7 @@ fun PetAddEditScreen(
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = if (petId == null) "Add Pet" else "Update Pet")
+            Text(text = if (petId == null) stringResource(id = R.string.add_pet) else stringResource(id = R.string.update_pet))
         }
         Spacer(modifier = Modifier.height(16.dp))
     }
