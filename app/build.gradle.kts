@@ -39,35 +39,40 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.room.runtime)
-    ksp(libs.androidx.ksp.room)
-    implementation(libs.androidx.room.ktx)
+    // Base
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
+
+    // Jetpack Compose
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.com.google.android.material)
-    implementation(libs.androidx.ui.tooling)
-    implementation(libs.androidx.constraintlayout)
+
+    // ViewModel, LiveData, Lifecycle
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
+    // Room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.ksp.room)
+
+    // Navigation
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.navigation.compose)
+
+    // Testing
     testImplementation(libs.junit)
     testImplementation(libs.androidx.ui.test.manifest)
     testImplementation(libs.androidx.ui.test.junit4)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation(libs.androidx.navigation.compose)
-    implementation ("androidx.compose.ui:ui:<latest_version>")
-    implementation ("androidx.compose.material:material:<latest_version>")
-    implementation ("androidx.compose.ui:ui-tooling:<latest_version>")
-    implementation ("androidx.navigation:navigation-compose:<latest_version>")
-
 }

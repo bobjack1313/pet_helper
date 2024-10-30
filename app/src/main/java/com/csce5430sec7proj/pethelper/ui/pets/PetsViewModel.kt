@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.csce5430sec7proj.pethelper.Graph
-import com.csce5430sec7proj.pethelper.data.PetRepository
+import com.csce5430sec7proj.pethelper.data.PetHelperRepository
 import com.csce5430sec7proj.pethelper.data.entities.Pet
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -17,7 +17,7 @@ import java.util.Date
 
 
 class PetsViewModel(
-    private val repository: PetRepository = Graph.repository
+    private val repository: PetHelperRepository = Graph.repository
 ) : ViewModel() {
     // Change MutableState to StateFlow
     private val _state: MutableStateFlow<PetsState> = MutableStateFlow(PetsState())
