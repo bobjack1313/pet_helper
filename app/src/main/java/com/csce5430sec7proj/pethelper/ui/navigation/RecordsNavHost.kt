@@ -17,6 +17,7 @@ fun RecordsNavHost(modifier: Modifier = Modifier) {
     ) {
         composable("records_screen") {
             RecordsScreen(
+                navController = navController,  
                 onNavigate = { route ->
                     navController.navigate(route)
                 }

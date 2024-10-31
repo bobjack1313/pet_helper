@@ -20,9 +20,9 @@ data class Record(
     @ColumnInfo(name = "record_type")
     val type: RecordType,
     @ColumnInfo(name = "record_description")
-    val description: String?,
+    val description: String?="",
     @ColumnInfo(name = "record_date")
-    val date: Date?,
+    val date: Date?=null,
     @ColumnInfo(name = "vendor_id_fk")
     val vendorIdFk: Int? = 0,
     @ColumnInfo(name = "record_cost")
