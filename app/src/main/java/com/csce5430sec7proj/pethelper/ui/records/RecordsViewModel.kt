@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.update
+import com.csce5430sec7proj.pethelper.Graph
 
 // 定义用于管理 UI 状态的数据类
 data class RecordsState(
@@ -19,7 +21,7 @@ data class RecordsState(
 )
 
 class RecordsViewModel(
-    private val repository: PetHelperRepository
+    private val repository: PetHelperRepository = Graph.repository
 ) : ViewModel() {
 
     // 使用 StateFlow 管理 UI 状态
@@ -37,7 +39,7 @@ class RecordsViewModel(
     private fun loadRecords() {
         viewModelScope.launch {
             repository.getRecords.collectLatest { records ->
-                _state.value = _state.value.copy(records = records)
+                _state.update { it.copy(records = records) }
             }
         }
     }
@@ -56,19 +58,19 @@ class RecordsViewModel(
 
     // 显示添加对话框
     fun showAddDialog() {
-        _state.value = _state.value.copy(isAddDialogVisible = true)
+        _state.update { it.copy(isAddDialogVisible = true) }
     }
 
     // 隐藏添加对话框
     fun hideAddDialog() {
-        _state.value = _state.value.copy(isAddDialogVisible = false)
+        _state.update { it.copy(isAddDialogVisible = false) }
     }
 
     // 添加记录并更新列表
     fun addRecord(record: Record) {
         viewModelScope.launch {
             repository.insertRecord(record)
-            loadRecords() // 插入后重新加载数据更新UI
+            loadRecords() // 插入后重新加载数据更新 UI
         }
     }
 
@@ -76,11 +78,11 @@ class RecordsViewModel(
     fun deleteRecord(record: Record) {
         viewModelScope.launch {
             repository.deleteRecord(record)
-            loadRecords() // 删除后重新加载数据更新UI
+            loadRecords() // 删除后重新加载数据更新 UI
         }
     }
 
-    // 更新记录并刷新UI
+    // 更新记录并刷新 UI
     fun updateRecord(record: Record) {
         viewModelScope.launch {
             repository.updateRecord(record)

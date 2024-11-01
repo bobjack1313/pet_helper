@@ -20,6 +20,9 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import com.csce5430sec7proj.pethelper.data.entities.Record
 import com.csce5430sec7proj.pethelper.data.entities.RecordType
+import java.text.SimpleDateFormat
+import java.util.*
+
 @Composable
 fun RecordsScreen(
     navController: NavController,
@@ -56,8 +59,8 @@ fun RecordsScreen(
             }
             RecordContent(
                 navController = navController,
-                viewModel = recordsViewModel,
-                recordType = tabs[selectedTabIndex]
+                records = recordsViewModel.getFilteredRecords(),
+                recordsViewModel = recordsViewModel
             )
         }
     }
@@ -72,6 +75,7 @@ fun AddRecordDialog(viewModel: RecordsViewModel, recordType: RecordType) {
     var description by remember { mutableStateOf("") }
     var date by remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     Dialog(onDismissRequest = { viewModel.hideAddDialog() }) {
         Surface(
@@ -93,7 +97,7 @@ fun AddRecordDialog(viewModel: RecordsViewModel, recordType: RecordType) {
                 TextField(
                     value = date,
                     onValueChange = { date = it },
-                    label = { Text("Date") }
+                    label = { Text("Date (yyyy-mm-dd)") }
                 )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -101,18 +105,25 @@ fun AddRecordDialog(viewModel: RecordsViewModel, recordType: RecordType) {
                 ) {
                     TextButton(onClick = { viewModel.hideAddDialog() }) { Text("Cancel") }
                     TextButton(onClick = {
-                        coroutineScope.launch {
-                            viewModel.addRecord(
-                                Record(
-                                    type = recordType,  // 使用当前选中的 RecordType
-                                    description = description,
-                                    date = null,  // 可根据需要设置实际日期
-                                    petIdFk = 0,
-                                    vendorIdFk = null,
-                                    cost = 0.0
-                                )
-                            )
-                            viewModel.hideAddDialog()
+                        if (description.isNotBlank() && date.isNotBlank()) {
+                            try {
+                                val parsedDate = dateFormat.parse(date)
+                                coroutineScope.launch {
+                                    viewModel.addRecord(
+                                        Record(
+                                            type = recordType,
+                                            description = description,
+                                            date = parsedDate,
+                                            petIdFk = 0,
+                                            vendorIdFk = null,
+                                            cost = 0.0
+                                        )
+                                    )
+                                    viewModel.hideAddDialog()
+                                }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
                         }
                     }) { Text("Save") }
                 }
@@ -124,13 +135,11 @@ fun AddRecordDialog(viewModel: RecordsViewModel, recordType: RecordType) {
 @Composable
 fun RecordContent(
     navController: NavController,
-    viewModel: RecordsViewModel,
-    recordType: RecordType
+    records: List<Record>,
+    recordsViewModel: RecordsViewModel
 ) {
-    val records = viewModel.getFilteredRecords()
-
     if (records.isEmpty()) {
-        EmptyContent(recordType.name.replace("_", " ")) { viewModel.showAddDialog() }
+        EmptyContent("No Records Available") { }
     } else {
         LazyColumn(
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
@@ -138,14 +147,16 @@ fun RecordContent(
             items(records) { record ->
                 ListItem(
                     headlineContent = { Text(record.description ?: "No Description") },
-                    supportingContent = { Text("Date: ${record.date ?: "No Date"}") },
+                    supportingContent = { Text("Date: ${record.date?.let { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(it) } ?: "No Date"}") },
                     trailingContent = {
-                        IconButton(onClick = { viewModel.deleteRecord(record) }) {
+                        IconButton(onClick = {
+                            recordsViewModel.deleteRecord(record)
+                        }) {
                             Icon(Icons.Default.Delete, contentDescription = "Delete Record")
                         }
                     },
                     modifier = Modifier.clickable {
-                        navController.navigate("record_detail_screen/${recordType.name}/${record.id}")
+                        navController.navigate("record_detail_screen/${record.type.name}/${record.id}")
                     }
                 )
                 Divider()

@@ -26,7 +26,7 @@ import java.util.*
 fun RecordDetailScreen(
     navController: NavController,
     recordId: Int,
-    recordType: RecordType,  // 添加 RecordType 参数
+    recordType: RecordType,
     recordDao: RecordDao,
     onNavigate: (String) -> Unit = {}
 ) {
@@ -51,14 +51,14 @@ fun RecordDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("${recordType.name.replace("_", " ")} Details") },  // 动态标题
+                title = { Text("${recordType.name.replace("_", " ")} Details") },
                 actions = {
                     IconButton(onClick = {
                         coroutineScope.launch {
                             val record = Record(
                                 id = recordId,
                                 petIdFk = 0,
-                                type = recordType,  // 使用传入的 recordType
+                                type = recordType,
                                 description = descriptionState.value,
                                 date = null,
                                 vendorIdFk = 0,
@@ -90,44 +90,49 @@ fun RecordDetailScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // 日期选择输入框
-            TextField(
-                value = dateState.value,
-                onValueChange = { dateState.value = it },
-                label = { Text("Date") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        // 打开日期选择器
-                        DatePickerDialog(
-                            context, { _, year, month, dayOfMonth ->
-                                calendar.set(year, month, dayOfMonth)
-                                dateState.value = dateFormat.format(calendar.time)
-                            },
-                            calendar.get(Calendar.YEAR),
-                            calendar.get(Calendar.MONTH),
-                            calendar.get(Calendar.DAY_OF_MONTH)
-                        ).show()
+            // 日期选择按钮
+            Button(onClick = {
+                DatePickerDialog(
+                    context, { _, year, month, dayOfMonth ->
+                        calendar.set(year, month, dayOfMonth)
+                        dateState.value = dateFormat.format(calendar.time)
                     },
-                readOnly = true  // 禁止手动输入，只能通过选择器设置
-            )
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH)
+                ).show()
+            }) {
+                Text("Select Date")
+            }
+
+            // 显示选择的日期
+            Text("Selected Date: ${dateState.value}")
 
             // 保存按钮
             Button(
                 onClick = {
-                    coroutineScope.launch {
-                        val parsedDate = dateFormat.parse(dateState.value)
-                        val updatedRecord = Record(
-                            id = recordId,
-                            petIdFk = 0,
-                            type = recordType,  // 使用传入的 recordType
-                            description = descriptionState.value,
-                            date = parsedDate,
-                            vendorIdFk = 0,
-                            cost = 0.0
-                        )
-                        recordDao.update(updatedRecord)
-                        navController.popBackStack()
+                    if (descriptionState.value.isNotBlank()) {
+                        coroutineScope.launch {
+                            val parsedDate = try {
+                                dateFormat.parse(dateState.value)
+                            } catch (e: Exception) {
+                                null
+                            }
+                            val updatedRecord = Record(
+                                id = recordId,
+                                petIdFk = 0,
+                                type = recordType,
+                                description = descriptionState.value,
+                                date = parsedDate,
+                                vendorIdFk = 0,
+                                cost = 0.0
+                            )
+                            recordDao.update(updatedRecord)
+                            navController.popBackStack()
+                        }
+                    } else {
+                        // 显示提示信息，例如 Snackbar 提示用户输入有效的描述
+                        // 可以考虑用 ScaffoldState.snackbarHostState.showSnackbar()
                     }
                 },
                 modifier = Modifier.align(Alignment.End)
