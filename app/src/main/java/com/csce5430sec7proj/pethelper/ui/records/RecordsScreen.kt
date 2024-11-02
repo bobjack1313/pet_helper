@@ -2,7 +2,7 @@
 
 package com.csce5430sec7proj.pethelper.ui.records
 
-import androidx.compose.foundation.clickable
+import android.app.DatePickerDialog
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,10 +18,13 @@ import kotlinx.coroutines.launch
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.ui.platform.LocalContext
 import com.csce5430sec7proj.pethelper.data.entities.Record
 import com.csce5430sec7proj.pethelper.data.entities.RecordType
 import java.text.SimpleDateFormat
 import java.util.*
+import android.util.Log
+import androidx.compose.foundation.clickable
 
 @Composable
 fun RecordsScreen(
@@ -59,8 +62,8 @@ fun RecordsScreen(
             }
             RecordContent(
                 navController = navController,
-                records = recordsViewModel.getFilteredRecords(),
-                recordsViewModel = recordsViewModel
+                recordsViewModel = recordsViewModel,
+                records = recordsViewModel.getFilteredRecords()
             )
         }
     }
@@ -76,12 +79,13 @@ fun AddRecordDialog(viewModel: RecordsViewModel, recordType: RecordType) {
     var date by remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    
+    val calendar = Calendar.getInstance()
+    val context = LocalContext.current
 
     Dialog(onDismissRequest = { viewModel.hideAddDialog() }) {
         Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier = Modifier.padding(16.dp),
             shape = MaterialTheme.shapes.medium
         ) {
             Column(
@@ -89,16 +93,36 @@ fun AddRecordDialog(viewModel: RecordsViewModel, recordType: RecordType) {
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text("Add New ${recordType.name.replace("_", " ")} Record", style = MaterialTheme.typography.titleLarge)
+                
                 TextField(
                     value = description,
                     onValueChange = { description = it },
                     label = { Text("Description") }
                 )
-                TextField(
-                    value = date,
-                    onValueChange = { date = it },
-                    label = { Text("Date (yyyy-mm-dd)") }
-                )
+                
+                OutlinedButton(
+                    onClick = {
+                        Log.d("DatePicker", "Date Picker Dialog triggered")
+                        try {
+                            DatePickerDialog(
+                                context,
+                                { _, year, month, dayOfMonth ->
+                                    calendar.set(year, month, dayOfMonth)
+                                    date = dateFormat.format(calendar.time)
+                                },
+                                calendar.get(Calendar.YEAR),
+                                calendar.get(Calendar.MONTH),
+                                calendar.get(Calendar.DAY_OF_MONTH)
+                            ).show()
+                        } catch (e: Exception) {
+                            Log.e("DatePicker", "Error showing Date Picker Dialog", e)
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(if (date.isNotBlank()) date else "Select Date")
+                }
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
@@ -122,7 +146,7 @@ fun AddRecordDialog(viewModel: RecordsViewModel, recordType: RecordType) {
                                     viewModel.hideAddDialog()
                                 }
                             } catch (e: Exception) {
-                                e.printStackTrace()
+                                Log.e("AddRecord", "Error adding record", e)
                             }
                         }
                     }) { Text("Save") }
@@ -135,11 +159,13 @@ fun AddRecordDialog(viewModel: RecordsViewModel, recordType: RecordType) {
 @Composable
 fun RecordContent(
     navController: NavController,
-    records: List<Record>,
-    recordsViewModel: RecordsViewModel
+    recordsViewModel: RecordsViewModel,
+    records: List<Record>
 ) {
     if (records.isEmpty()) {
-        EmptyContent("No Records Available") { }
+        EmptyContent("No Records Available") {
+            recordsViewModel.showAddDialog()
+        }
     } else {
         LazyColumn(
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
@@ -156,7 +182,7 @@ fun RecordContent(
                         }
                     },
                     modifier = Modifier.clickable {
-                        navController.navigate("record_detail_screen/${record.type.name}/${record.id}")
+                        navController.navigate("record_detail_screen/${record.id}/${record.type.name}")
                     }
                 )
                 Divider()
@@ -164,6 +190,7 @@ fun RecordContent(
         }
     }
 }
+
 
 @Composable
 fun EmptyContent(contentType: String, onAddClick: () -> Unit) {

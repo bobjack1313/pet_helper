@@ -27,7 +27,7 @@ fun RecordDetailScreen(
     navController: NavController,
     recordId: Int,
     recordType: RecordType,
-    recordDao: RecordDao,
+    recordsViewModel: RecordsViewModel, // 使用 ViewModel 代替直接使用 recordDao
     onNavigate: (String) -> Unit = {}
 ) {
     val descriptionState = remember { mutableStateOf("") }
@@ -41,7 +41,7 @@ fun RecordDetailScreen(
 
     // 使用 LaunchedEffect 加载单个记录
     LaunchedEffect(recordId) {
-        val record = recordDao.getRecord(recordId).firstOrNull()
+        val record = recordsViewModel.getRecordById(recordId) // 从 ViewModel 获取记录
         if (record != null) {
             descriptionState.value = record.description ?: ""
             dateState.value = record.date?.let { dateFormat.format(it) } ?: ""
@@ -55,16 +55,7 @@ fun RecordDetailScreen(
                 actions = {
                     IconButton(onClick = {
                         coroutineScope.launch {
-                            val record = Record(
-                                id = recordId,
-                                petIdFk = 0,
-                                type = recordType,
-                                description = descriptionState.value,
-                                date = null,
-                                vendorIdFk = 0,
-                                cost = 0.0
-                            )
-                            recordDao.delete(record)
+                            recordsViewModel.deleteRecord(Record(id = recordId, petIdFk = 0, type = recordType, description = descriptionState.value, date = null, vendorIdFk = 0, cost = 0.0)) // 从 ViewModel 中删除记录
                             navController.popBackStack()
                         }
                     }) {
@@ -127,12 +118,9 @@ fun RecordDetailScreen(
                                 vendorIdFk = 0,
                                 cost = 0.0
                             )
-                            recordDao.update(updatedRecord)
+                            recordsViewModel.updateRecord(updatedRecord) // 从 ViewModel 更新记录
                             navController.popBackStack()
                         }
-                    } else {
-                        // 显示提示信息，例如 Snackbar 提示用户输入有效的描述
-                        // 可以考虑用 ScaffoldState.snackbarHostState.showSnackbar()
                     }
                 },
                 modifier = Modifier.align(Alignment.End)

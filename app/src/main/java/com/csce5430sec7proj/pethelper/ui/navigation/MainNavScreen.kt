@@ -22,11 +22,18 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.ui.res.stringResource
 import com.csce5430sec7proj.pethelper.R
+import com.csce5430sec7proj.pethelper.data.daos.RecordDao
+import com.csce5430sec7proj.pethelper.ui.records.RecordsViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+
 
 // Main navigation screen of the app with tab bar
 @Composable
-fun MainNavScreen(modifier: Modifier = Modifier) {
+fun MainNavScreen(modifier: Modifier = Modifier,
+                recordDao: RecordDao)
+ {
 
+    val recordsViewModel: RecordsViewModel = viewModel()
     // List of navigation items with labels, icons, and badge count
     var notificationsBadgeCount by remember { mutableIntStateOf(5) }
 
@@ -72,7 +79,7 @@ fun MainNavScreen(modifier: Modifier = Modifier) {
         // Display content based on selected tab
         when (selectedTabIndex) {
             0 -> PetsNavHost(modifier = Modifier.padding(innerPadding))
-            1 -> RecordsNavHost(modifier = Modifier.padding(innerPadding))
+            1 -> RecordsNavHost(modifier = Modifier.padding(innerPadding),recordsViewModel = recordsViewModel) 
             2 -> NotificationsNavHost(modifier = Modifier.padding(innerPadding))
             3 -> SettingsNavHost(modifier = Modifier.padding(innerPadding))
         }

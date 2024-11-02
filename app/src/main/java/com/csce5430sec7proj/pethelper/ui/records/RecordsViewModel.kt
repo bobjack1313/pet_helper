@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.update
 import com.csce5430sec7proj.pethelper.Graph
+import kotlinx.coroutines.flow.firstOrNull
+
 
 // 定义用于管理 UI 状态的数据类
 data class RecordsState(
@@ -93,5 +95,8 @@ class RecordsViewModel(
     // 设置选中的标签，并加载相应的记录
     fun setSelectedTab(index: Int) {
         selectedTabIndex.value = index
+    }
+    suspend fun getRecordById(id: Int): Record? {
+        return repository.getRecord(id).firstOrNull()
     }
 }
