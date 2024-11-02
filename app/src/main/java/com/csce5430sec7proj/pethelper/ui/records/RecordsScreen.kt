@@ -1,141 +1,191 @@
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+
 package com.csce5430sec7proj.pethelper.ui.records
 
+import android.app.DatePickerDialog
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.window.Dialog
 import kotlinx.coroutines.launch
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.ui.platform.LocalContext
+import com.csce5430sec7proj.pethelper.data.entities.Record
+import com.csce5430sec7proj.pethelper.data.entities.RecordType
+import java.text.SimpleDateFormat
+import java.util.*
+import android.util.Log
+import androidx.compose.foundation.clickable
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecordsScreen(
+    navController: NavController,
+    recordsViewModel: RecordsViewModel = viewModel(),
     onNavigate: (String) -> Unit = {}
 ) {
-    var selectedTabIndex by remember { mutableStateOf(0) }
-    val tabs = listOf("Medical Record", "Vaccinations", "Dewormings", "Physical Exams")
-    val navController = rememberNavController()
+    val recordsState by recordsViewModel.state.collectAsState()
+    val selectedTabIndex by recordsViewModel.selectedTabIndex
+    val tabs = listOf(
+        RecordType.MEDICAL,
+        RecordType.GROOMING,
+        RecordType.VACCINATION,
+        RecordType.TRAINING,
+        RecordType.DIET
+    )
 
     Scaffold(
-        topBar = {
-            TopAppBar(title = { Text("Medical Records") })
-        },
+        topBar = { TopAppBar(title = { Text("Pet Records") }) },
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-//                if (!recordsViewModel.isAddDialogVisible.value) {
-//                    recordsViewModel.showAddDialog()
-//                when (selectedTabIndex) {
-//                    0 -> records
-//                    1 -> vaccinations//.add("New Vaccination Record")
-//                    2 -> training//.add("New Training Record")
-//                    3 -> dietary//.add("Dietary Record")
-//                }
-            }) {
+            FloatingActionButton(onClick = { recordsViewModel.showAddDialog() }) {
                 Icon(Icons.Default.Add, contentDescription = "Add Record")
             }
         }
     ) { padding ->
         Column(modifier = Modifier.padding(padding)) {
-            // TabRow 用于显示顶部选项卡
             TabRow(selectedTabIndex = selectedTabIndex) {
-                tabs.forEachIndexed { index, title ->
-//                    Tab(
-//                        selected = selectedTabIndex == index,
-//                        onClick = { //recordsViewModel.setSelectedTab(index) },
-//                        text = { Text(title) }
-//                    )
-//                }
+                tabs.forEachIndexed { index, type ->
+                    Tab(
+                        selected = selectedTabIndex == index,
+                        onClick = { recordsViewModel.setSelectedTab(index) },
+                        text = { Text(type.name.replace("_", " ")) }
+                    )
+                }
             }
-            // 根据选中的标签展示不同的内容
-//            when (selectedTabIndex) {
-//                0 -> MedicalRecordContent(navController, recordsViewModel)
-//                0 -> RecordContent(navController)
-//                1 -> VaccinationContent(navController)
-//                2 -> TrainingContent(navController)
-//                3 -> DietaryContent(navController)
-//            }
+            RecordContent(
+                navController = navController,
+                recordsViewModel = recordsViewModel,
+                records = recordsViewModel.getFilteredRecords()
+            )
         }
     }
 
-//    if (recordsViewModel.isAddDialogVisible.value) {
-//        AddRecordDialog(viewModel = recordsViewModel)
-//    }
+    if (recordsState.isAddDialogVisible) {
+        AddRecordDialog(viewModel = recordsViewModel, recordType = tabs[selectedTabIndex])
+    }
 }
 
-//val records = mutableStateOf<String>()
-//val vaccinations = mutableStateOf<String>()
-//val training = mutableStateOf<String>()
-//// TODO: Need better category name for this
-//val dietary = mutableStateOf<String>()
-
 @Composable
-fun AddRecordDialog(viewModel: RecordsViewModel) {
-    var title by remember { mutableStateOf("") }
+fun AddRecordDialog(viewModel: RecordsViewModel, recordType: RecordType) {
+    var description by remember { mutableStateOf("") }
     var date by remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    
+    val calendar = Calendar.getInstance()
+    val context = LocalContext.current
 
     Dialog(onDismissRequest = { viewModel.hideAddDialog() }) {
         Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier = Modifier.padding(16.dp),
             shape = MaterialTheme.shapes.medium
         ) {
             Column(
                 modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text(text = "Add New Record", style = MaterialTheme.typography.titleLarge)
+                Text("Add New ${recordType.name.replace("_", " ")} Record", style = MaterialTheme.typography.titleLarge)
+                
                 TextField(
-                    value = title,
-                    onValueChange = { title = it },
-                    label = { Text("Title") }
+                    value = description,
+                    onValueChange = { description = it },
+                    label = { Text("Description") }
                 )
-                TextField(
-                    value = date,
-                    onValueChange = { date = it },
-                    label = { Text("Date") }
-                )
+                
+                OutlinedButton(
+                    onClick = {
+                        Log.d("DatePicker", "Date Picker Dialog triggered")
+                        try {
+                            DatePickerDialog(
+                                context,
+                                { _, year, month, dayOfMonth ->
+                                    calendar.set(year, month, dayOfMonth)
+                                    date = dateFormat.format(calendar.time)
+                                },
+                                calendar.get(Calendar.YEAR),
+                                calendar.get(Calendar.MONTH),
+                                calendar.get(Calendar.DAY_OF_MONTH)
+                            ).show()
+                        } catch (e: Exception) {
+                            Log.e("DatePicker", "Error showing Date Picker Dialog", e)
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(if (date.isNotBlank()) date else "Select Date")
+                }
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
                 ) {
-                    TextButton(onClick = { viewModel.hideAddDialog() }) {
-                        Text("Cancel")
-                    }
+                    TextButton(onClick = { viewModel.hideAddDialog() }) { Text("Cancel") }
                     TextButton(onClick = {
-                        coroutineScope.launch {
-//                            viewModel.addRecord(record: )
-                            viewModel.hideAddDialog()
+                        if (description.isNotBlank() && date.isNotBlank()) {
+                            try {
+                                val parsedDate = dateFormat.parse(date)
+                                coroutineScope.launch {
+                                    viewModel.addRecord(
+                                        Record(
+                                            type = recordType,
+                                            description = description,
+                                            date = parsedDate,
+                                            petIdFk = 0,
+                                            vendorIdFk = null,
+                                            cost = 0.0
+                                        )
+                                    )
+                                    viewModel.hideAddDialog()
+                                }
+                            } catch (e: Exception) {
+                                Log.e("AddRecord", "Error adding record", e)
+                            }
                         }
-                    }) {
-                        Text("Save")
-                    }
+                    }) { Text("Save") }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun RecordContent(
+    navController: NavController,
+    recordsViewModel: RecordsViewModel,
+    records: List<Record>
+) {
+    if (records.isEmpty()) {
+        EmptyContent("No Records Available") {
+            recordsViewModel.showAddDialog()
+        }
+    } else {
+        LazyColumn(
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+        ) {
+            items(records) { record ->
+                ListItem(
+                    headlineContent = { Text(record.description ?: "No Description") },
+                    supportingContent = { Text("Date: ${record.date?.let { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(it) } ?: "No Date"}") },
+                    trailingContent = {
+                        IconButton(onClick = {
+                            recordsViewModel.deleteRecord(record)
+                        }) {
+                            Icon(Icons.Default.Delete, contentDescription = "Delete Record")
+                        }
+                    },
+                    modifier = Modifier.clickable {
+                        navController.navigate("record_detail_screen/${record.id}/${record.type.name}")
+                    }
+                )
+                Divider()
             }
         }
     }
@@ -143,99 +193,7 @@ fun AddRecordDialog(viewModel: RecordsViewModel) {
 
 
 @Composable
-fun RecordContent(navController: NavController, viewModel: RecordsViewModel) {
-//    val medicalRecords = viewModel.records
-//    if (medicalRecords.isEmpty()) {
-//        EmptyRecordsContent("Medical Record") {
-//            medicalRecords.add("New Medical Record")
-//        }
-//    } else {
-//        LazyColumn(
-//            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-//        ) {
-//            items(medicalRecords) { record ->
-//                ListItem(
-//                    headlineContent = { Text(record) },
-//                    supportingContent = { Text("Date: 2024-09-01") },
-//                    trailingContent = {  },
-//                    leadingContent = {
-//                        Icon(
-//                            Icons. Filled. Favorite,
-//                            contentDescription = "Localized description",
-//                            )
-////                    headlineContent = { Text(record.title) },
-////                    supportingContent = { Text("Date: ${record.date}") },
-////                    modifier = Modifier.clickable {
-////                        navController.navigate("medical_record_details/${record.title}")
-//                    }
-//                )
-//                HorizontalDivider()
-//            }
-//        }
-//    }
-}
-
-@Composable
-fun VaccinationContent(navController: NavController) {
-//    if (vaccinations.isEmpty()) {
-//        EmptyContent("Vaccinations") {
-//            vaccinations.add("New Vaccination")
-//        }
-//    } else {
-//        LazyColumn(
-//            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-//        ) {
-//            items(vaccinations) { vaccine ->
-//                ListItem(
-//                    text = { Text(vaccine) },
-//                    secondaryText = { Text("Vaccination Date: 2024-10-01") },
-//                    modifier = Modifier.clickable {
-//                        navController.navigate("vaccination_details/$vaccine")
-//                    }
-//                )
-//                HorizontalDivider()
-//            }
-//        }
-//    }
-}
-
-
-@Composable
-fun TrainingContent(navController: NavController) {
-//    if (dewormings.isEmpty()) {
-//        EmptyContent("Dewormings") {
-//            dewormings.add("New Deworming")
-//        }
-//    } else {
-//        LazyColumn(
-//            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-//        ) {
-//            items(dewormings) { deworming ->
-//                Text(text = deworming, modifier = Modifier.padding(8.dp))
-//            }
-//        }
-//    }
-}
-
-@Composable
-fun DietaryContent(navController: NavController) {
-//    if (physicalExams.isEmpty()) {
-//        EmptyContent("Physical Exams") {
-//            physicalExams.add("New Physical Exam")
-//        }
-//    } else {
-//        LazyColumn(
-//            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-//        ) {
-//            items(physicalExams) { exam ->
-//                Text(text = exam, modifier = Modifier.padding(8.dp))
-//            }
-//        }
-//    }
-}
-
-@Composable
-fun EmptyRecordsContent(contentType: String, onAddClick: () -> Unit) {
+fun EmptyContent(contentType: String, onAddClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -243,10 +201,8 @@ fun EmptyRecordsContent(contentType: String, onAddClick: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "$contentType is empty")
+        Text("$contentType is empty")
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onAddClick) {
-            Text(text = "Add Record")
-        }
+        Button(onClick = onAddClick) { Text("Add Record") }
     }
-}}
+}
