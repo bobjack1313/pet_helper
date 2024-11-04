@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "com.csce5430sec7proj.pethelper"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.csce5430sec7proj.pethelper"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 2
         versionName = "1.0"
 

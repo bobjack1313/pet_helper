@@ -38,7 +38,7 @@ data class Pet(
     @ColumnInfo(name = "pet_color")
     val color: String? = null,
     @ColumnInfo(name = "pet_weight")
-    val weight: Int? = null,
+    val weight: Double? = null,
     // Date of birth
     @ColumnInfo(name = "pet_date_of_birth")
     val dateOfBirth: Date? = null,

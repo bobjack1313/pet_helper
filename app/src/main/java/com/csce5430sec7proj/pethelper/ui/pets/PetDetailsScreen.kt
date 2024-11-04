@@ -112,6 +112,18 @@ fun PetDetailsScreen(
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
+                            text = "Type: ${pet.type}",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp),
+                            color = Color.Black
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Gender: ${pet.gender ?: "Unknown"}",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp),
+                            color = Color.Black
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
                             text = "Breed: ${pet.breed ?: "Unknown"}",
                             style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp),
                             color = Color.Black
@@ -119,6 +131,12 @@ fun PetDetailsScreen(
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             text = "Color: ${pet.color ?: "Not specified"}",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp),
+                            color = Color.Black
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Microchip ID: ${pet.microchipId ?: "Not available"}",
                             style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp),
                             color = Color.Black
                         )
