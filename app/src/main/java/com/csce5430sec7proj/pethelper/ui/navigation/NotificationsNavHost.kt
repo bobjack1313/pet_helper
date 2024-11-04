@@ -1,4 +1,5 @@
 package com.csce5430sec7proj.pethelper.ui.navigation
+import com.csce5430sec7proj.pethelper.ui.notifications.NotificationsScreen
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
