@@ -12,6 +12,7 @@ import com.csce5430sec7proj.pethelper.data.entities.RecordType
 import com.csce5430sec7proj.pethelper.ui.records.RecordDetailScreen
 import com.csce5430sec7proj.pethelper.ui.records.RecordsScreen
 import com.csce5430sec7proj.pethelper.ui.records.RecordsViewModel
+import com.csce5430sec7proj.pethelper.ui.records.ContactVetPage
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
@@ -56,6 +57,10 @@ fun RecordsNavHost(
                 recordType = recordType,
                 recordsViewModel = recordsViewModel // 使用传入的 ViewModel 实例
             )
+        }
+
+        composable("contact_vet") {
+            ContactVetPage()
         }
     }
 }

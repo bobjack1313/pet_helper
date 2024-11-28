@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.ui.platform.LocalContext
 import com.csce5430sec7proj.pethelper.data.entities.Record
 import com.csce5430sec7proj.pethelper.data.entities.RecordType
@@ -45,8 +46,19 @@ fun RecordsScreen(
     Scaffold(
         topBar = { TopAppBar(title = { Text("Pet Records") }) },
         floatingActionButton = {
-            FloatingActionButton(onClick = { recordsViewModel.showAddDialog() }) {
-                Icon(Icons.Default.Add, contentDescription = "Add Record")
+            Column {
+                FloatingActionButton(
+                    onClick = { recordsViewModel.showAddDialog() },
+                    modifier = Modifier.padding(bottom = 16.dp)
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Add Record")
+                }
+                FloatingActionButton(
+                    onClick = { navController.navigate("contact_vet") },
+                    modifier = Modifier.padding(bottom = 16.dp)
+                ) {
+                    Icon(Icons.Default.Phone, contentDescription = "Contact Vet")
+                }
             }
         }
     ) { padding ->
@@ -190,7 +202,6 @@ fun RecordContent(
         }
     }
 }
-
 
 @Composable
 fun EmptyContent(contentType: String, onAddClick: () -> Unit) {
