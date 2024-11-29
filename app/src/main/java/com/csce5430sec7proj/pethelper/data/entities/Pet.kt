@@ -41,6 +41,8 @@ data class Pet(
     val weight: Double? = null,
     // Date of birth
     @ColumnInfo(name = "pet_date_of_birth")
+
+
     val dateOfBirth: Date? = null,
     // Stored as a String to handle up to 15 digits
     val microchipId: String? = null,
@@ -55,12 +57,12 @@ data class Pet(
     val titles: List<String>? = null,
     val notes: String? = null,
 
-
+)
 
 
     //lastVetVisit?
     //vaccinationStatus?
-)
+
 
 
 

@@ -17,6 +17,8 @@ import com.csce5430sec7proj.pethelper.data.entities.PetImage
 import com.csce5430sec7proj.pethelper.data.entities.Record
 import com.csce5430sec7proj.pethelper.data.entities.Vendor
 import com.csce5430sec7proj.pethelper.data.entities.Vaccination
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 
 /** PetHelperDatabase.kt
 ** This file defines the Room database for the Pet Helper application.

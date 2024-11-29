@@ -12,7 +12,7 @@ android {
     defaultConfig {
         applicationId = "com.csce5430sec7proj.pethelper"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 34
         versionCode = 3
         versionName = "1.0"
 
