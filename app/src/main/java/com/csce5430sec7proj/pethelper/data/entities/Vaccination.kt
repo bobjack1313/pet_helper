@@ -25,4 +25,6 @@ data class Vaccination(
     val description: String?,
     @ColumnInfo(name = "vaccination_date")
     val date: Date?,
+    @ColumnInfo(name = "vaccination_expiration_date")
+    val expirationDate: Date?,
 )
