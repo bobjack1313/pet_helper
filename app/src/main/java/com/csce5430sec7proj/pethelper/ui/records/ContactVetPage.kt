@@ -1,8 +1,7 @@
+@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+
 package com.csce5430sec7proj.pethelper.ui.records
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
@@ -10,19 +9,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 
-class ContactVetActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            ContactVetPage()
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContactVetPage() {
+fun ContactVetPage(viewModel: VetContactViewModel = viewModel()) {
     var phoneNumber by remember { mutableStateOf(TextFieldValue()) }
     var emailAddress by remember { mutableStateOf(TextFieldValue()) }
     var message by remember { mutableStateOf(TextFieldValue()) }
@@ -60,6 +50,7 @@ fun ContactVetPage() {
             Button(
                 onClick = {
                     if (validateContactDetails(phoneNumber.text, emailAddress.text)) {
+                        viewModel.saveContact(phoneNumber.text, emailAddress.text, message.text)
                         validationMessage = "Contact details saved successfully!"
                     } else {
                         validationMessage = "Invalid contact details. Please check and try again."
@@ -72,8 +63,7 @@ fun ContactVetPage() {
 
             Text(validationMessage, style = MaterialTheme.typography.bodyLarge)
         }
-    }
-}
+    }}
 
 fun validateContactDetails(phoneNumber: String, emailAddress: String): Boolean {
     val phonePattern = "^\\+?[0-9]{10,13}$".toRegex()

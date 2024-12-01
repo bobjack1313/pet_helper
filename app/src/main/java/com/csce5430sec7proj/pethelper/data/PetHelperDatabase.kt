@@ -17,6 +17,8 @@ import com.csce5430sec7proj.pethelper.data.entities.PetImage
 import com.csce5430sec7proj.pethelper.data.entities.Record
 import com.csce5430sec7proj.pethelper.data.entities.Vendor
 import com.csce5430sec7proj.pethelper.data.entities.Vaccination
+import com.csce5430sec7proj.pethelper.data.entities.VetContact
+import com.csce5430sec7proj.pethelper.data.daos.VetContactDao
 
 /** PetHelperDatabase.kt
 ** This file defines the Room database for the Pet Helper application.
@@ -28,8 +30,8 @@ import com.csce5430sec7proj.pethelper.data.entities.Vaccination
 
 @TypeConverters(value = [Converters::class])
 @Database(entities = [Pet::class, Record::class, Appointment::class, Vendor::class,
-                     PetImage::class, Vaccination::class],
-    version = 3, exportSchema = false)
+                     PetImage::class, Vaccination::class,VetContact::class],
+    version = 4, exportSchema = false)
 abstract class PetHelperDatabase : RoomDatabase() {
     abstract fun petDao(): PetDao
     abstract fun recordDao(): RecordDao
@@ -37,6 +39,7 @@ abstract class PetHelperDatabase : RoomDatabase() {
     abstract fun vendorDao(): VendorDao
     abstract fun petImageDao(): PetImageDao
     abstract fun vaccinationDao(): VaccinationDao
+    abstract fun vetContactDao(): VetContactDao
     // Add other DAOs as needed
 
     companion object {
