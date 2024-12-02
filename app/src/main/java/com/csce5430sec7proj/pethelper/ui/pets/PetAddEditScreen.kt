@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Button
@@ -24,16 +23,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.csce5430sec7proj.pethelper.data.entities.Pet
-import java.util.Date
 import android.app.DatePickerDialog
+import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Switch
@@ -45,6 +41,17 @@ import com.csce5430sec7proj.pethelper.data.entities.PetGender
 import com.csce5430sec7proj.pethelper.data.entities.PetType
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.rememberAsyncImagePainter
+import com.csce5430sec7proj.pethelper.utils.saveImageToStorage
 
 
 @Composable
@@ -57,13 +64,15 @@ fun PetAddEditScreen(
     val pet: Pet? = petState.pets.find { it.id == petId }
     var isMetric: Boolean = true
 
+//    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    val context = LocalContext.current
+
     // Mutable state for the selected pet
     val selectedPetState = remember(petId) {
         mutableStateOf(pet ?: Pet(
             0, "", PetType.OTHER,
         ))
     }
-    val context = LocalContext.current
 
     // Fetch existing pet data if petId is not null
     LaunchedEffect(petId, pet) {
@@ -71,6 +80,21 @@ fun PetAddEditScreen(
             selectedPetState.value = pet
         }
     }
+
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri: Uri? ->
+            if (uri != null) {
+                val savedImagePath = saveImageToStorage(context, uri)
+                if (savedImagePath != null) {
+                    selectedPetState.value = selectedPetState.value.copy(imagePath = savedImagePath)
+                }
+            } else {
+                // Use the context safely
+                Toast.makeText(context, "Image selection cancelled", Toast.LENGTH_SHORT).show()
+            }
+        }
+    )
 
     // Add-Edit Layout
     Column(
@@ -105,15 +129,27 @@ fun PetAddEditScreen(
                 .size(250.dp)
                 .clip(CircleShape)
                 .background(Color.Gray)
-                .padding(8.dp)
-                .clickable { /* TODO: Open image picker to select an image */ }
+                .clickable { imagePickerLauncher.launch("image/*") }
         ) {
-            // Placeholder for pet image
-            Icon(
-                imageVector = Icons.Default.AccountCircle,
-                contentDescription = "Add Pet Image",
-                modifier = Modifier.align(Alignment.Center).size(100.dp)
-            )
+            val petImagePath = selectedPetState.value.imagePath
+
+            if (!petImagePath.isNullOrEmpty()) {
+//            if (selectedImageUri != null) {
+                // Display the selected image
+                Image(
+                    painter = rememberAsyncImagePainter(model = petImagePath),
+                    contentDescription = "Selected Pet Image",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                // Placeholder for pet image
+                Icon(
+                    imageVector = Icons.Default.AccountCircle,
+                    contentDescription = "Add Pet Image",
+                    modifier = Modifier.align(Alignment.Center).size(100.dp)
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))

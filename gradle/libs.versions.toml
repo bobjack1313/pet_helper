@@ -20,6 +20,7 @@ kotlinCoroutinesTestVersion = "1.9.0"
 testCoreVersion = "1.6.1"
 uiManifestVersion = "1.7.5"
 uiTestJunitVersion = "1.7.5"
+coil = "2.4.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -58,6 +59,7 @@ androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifec
 androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "androidNavigation" }
 androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "androidNavigation" }
 com-google-android-material = { group = "com.google.android.material", name = "material", version.ref = "androidMaterial" }
+coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
 #Navigation
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidNavigation" }

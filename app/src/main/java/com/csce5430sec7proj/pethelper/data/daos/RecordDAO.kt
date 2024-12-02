@@ -61,15 +61,7 @@ interface RecordDao {
     """)
     fun getRecordWithPetAndVendorFilteredById(recordId: Int):
             Flow<RecordsWithPetAndVendor>
-
- 
-
-
 }
-/*
-Relationships:
-• many-to-1 with Pet
-*/
 
 data class RecordsWithPetAndVendor(
     @Embedded val record: Record,

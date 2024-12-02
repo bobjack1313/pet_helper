@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import com.csce5430sec7proj.pethelper.R
+import coil.compose.rememberAsyncImagePainter
 
 
 @Composable
@@ -68,9 +69,12 @@ fun PetsScreen(
                         .padding(16.dp)
                 ) {
                     items(petsState.pets) { pet ->
-                        PetRow(petName = pet.name, onClick = {
-                            onNavigateDetail(pet.id)
-                        })
+                        PetRow(
+                            petName = pet.name, onClick = {
+                                onNavigateDetail(pet.id)
+                            },
+                            petImagePath = pet.imagePath
+                        )
                     }
                 }
             }
@@ -79,10 +83,10 @@ fun PetsScreen(
 }
 
 
-
 @Composable
 fun PetRow(
     petName: String,
+    petImagePath: String?,
     onClick: () -> Unit
 ) {
     Row(
@@ -94,17 +98,29 @@ fun PetRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
-        // Placeholder for pet image (replace with real image later)
-        Image(
-            // Placeholder image
-            painter = painterResource(id = R.drawable.pet_placeholder),
-            contentDescription = stringResource(id = R.string.pet_picture),
+        // Display the pet's image or a placeholder
+        Box(
             modifier = Modifier
-                // Set the size for the pet image
                 .size(100.dp)
-                .clip(CircleShape),
-            contentScale = ContentScale.Crop
-        )
+                .clip(CircleShape)
+        ) {
+            if (!petImagePath.isNullOrEmpty()) {
+                Image(
+                    painter = rememberAsyncImagePainter(model = petImagePath),
+                    contentDescription = stringResource(id = R.string.pet_picture),
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Image(
+                    painter = painterResource(id = R.drawable.pet_placeholder),
+                    contentDescription = stringResource(id = R.string.pet_picture),
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
+        }
+
         Spacer(modifier = Modifier.width(16.dp))
 
         // Pet name text

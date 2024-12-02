@@ -69,9 +69,3 @@ data class AppointmentsWithPetAndVendor(
     @Embedded val pet: Pet,
     @Embedded val vendor: Vendor
 )
-
-/*
-Relationships:
-• many-to-1 with Pet
-• many-to-1 with Vendor
-*/

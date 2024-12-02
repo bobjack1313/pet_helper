@@ -32,6 +32,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.csce5430sec7proj.pethelper.R
 import com.csce5430sec7proj.pethelper.data.entities.Pet
 import java.text.SimpleDateFormat
@@ -75,15 +76,27 @@ fun PetDetailsScreen(
                     .background(Color.Gray)
                     .padding(8.dp)
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.pet_placeholder),
-                    contentDescription = "Pet Picture",
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(CircleShape)
-                        .align(Alignment.Center),
-                    contentScale = ContentScale.Crop
-                )
+                if (!pet?.imagePath.isNullOrEmpty()) {
+                    // Load and display the pet's image
+                    Image(
+                        painter = rememberAsyncImagePainter(model = pet?.imagePath),
+                        contentDescription = "Pet Picture",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    // Fallback placeholder image
+                    Image(
+                        painter = painterResource(id = R.drawable.pet_placeholder),
+                        contentDescription = "Pet Picture Placeholder",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
 
             // Pet Name

@@ -9,8 +9,6 @@ import androidx.room.Update
 import com.csce5430sec7proj.pethelper.data.entities.Pet
 import kotlinx.coroutines.flow.Flow
 
-// More info at
-// https://developer.android.com/training/data-storage/room/accessing-data
 
 @Dao
 interface PetDao {
@@ -30,12 +28,3 @@ interface PetDao {
     @Query("SELECT * from pets ORDER BY pet_name ASC")
     fun getAll(): Flow<List<Pet>>
 }
-
-/*
-Relationships:
-• 1-to-many with VetAppointment
-• 1-to-many with GroomingAppointment
-• 1-to-many with CareReminder
-• 1-to-many with CareRecord
-• 1-to-many with PetCareCost
- */

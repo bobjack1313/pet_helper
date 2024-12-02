@@ -28,9 +28,3 @@ interface VendorDao {
     @Query("SELECT * from vendors ORDER BY vendor_name ASC")
     fun getAll(): Flow<List<Vendor>>
 }
-
-/*
-Relationships:
-• 1-to-many with Appointment
-• 1-to-many with Record
-*/

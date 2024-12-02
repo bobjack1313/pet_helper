@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.com.google.android.material)
+    implementation(libs.coil.compose)
 
     // ViewModel, LiveData, Lifecycle
     implementation(libs.androidx.lifecycle.livedata.ktx)
