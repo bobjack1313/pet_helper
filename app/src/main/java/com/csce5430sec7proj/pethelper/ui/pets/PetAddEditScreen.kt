@@ -44,8 +44,6 @@ import java.util.*
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -62,9 +60,15 @@ fun PetAddEditScreen(
     val viewModel: PetsViewModel = viewModel()
     val petState = viewModel.state.collectAsState().value
     val pet: Pet? = petState.pets.find { it.id == petId }
-    var isMetric: Boolean = true
-
-//    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    // Determine if the user prefers the metric system
+    val isMetric: Boolean = remember {
+        when (Locale.getDefault().country) {
+            // Countries using imperial units
+            "US", "LR", "MM" -> false
+            // Default to metric
+            else -> true
+        }
+    }
     val context = LocalContext.current
 
     // Mutable state for the selected pet

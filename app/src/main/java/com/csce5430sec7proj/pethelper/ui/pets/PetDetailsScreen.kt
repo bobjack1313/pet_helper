@@ -60,7 +60,7 @@ fun PetDetailsScreen(
                 Icon(imageVector = Icons.Default.Edit, contentDescription = stringResource(id = R.string.Edit))
             }
         }
-    ) { _ ->
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -74,7 +74,7 @@ fun PetDetailsScreen(
                     .size(250.dp)
                     .clip(CircleShape)
                     .background(Color.Gray)
-                    .padding(8.dp)
+                    .padding(padding)
             ) {
                 if (!pet?.imagePath.isNullOrEmpty()) {
                     // Load and display the pet's image
