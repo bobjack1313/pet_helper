@@ -1,5 +1,5 @@
 [versions]
-agp = "8.7.2"
+agp = "8.7.3"
 kotlin = "2.0.21"
 ksp = "2.0.21-1.0.25"
 coreKtx = "1.15.0"
@@ -17,7 +17,7 @@ roomVersion = "2.6.1"
 mockitoCore = "5.14.2"
 truthVersion = "1.4.4"
 kotlinCoroutinesTestVersion = "1.9.0"
-testCoreVersion = "1.6.1"
+testCoreVersion = "1.6.1" # Updated version is not stable with our app
 uiManifestVersion = "1.7.5"
 uiTestJunitVersion = "1.7.5"
 coil = "2.4.0"
