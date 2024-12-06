@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun ContactVetPage(viewModel: VetContactViewModel = viewModel()) {
@@ -17,6 +18,7 @@ fun ContactVetPage(viewModel: VetContactViewModel = viewModel()) {
     var emailAddress by remember { mutableStateOf(TextFieldValue()) }
     var message by remember { mutableStateOf(TextFieldValue()) }
     var validationMessage by remember { mutableStateOf("") }
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
@@ -50,8 +52,10 @@ fun ContactVetPage(viewModel: VetContactViewModel = viewModel()) {
             Button(
                 onClick = {
                     if (validateContactDetails(phoneNumber.text, emailAddress.text)) {
-                        viewModel.saveContact(phoneNumber.text, emailAddress.text, message.text)
-                        validationMessage = "Contact details saved successfully!"
+                        coroutineScope.launch {
+                            viewModel.saveContact(phoneNumber.text, emailAddress.text, message.text)
+                            validationMessage = "Contact details saved successfully!"
+                        }
                     } else {
                         validationMessage = "Invalid contact details. Please check and try again."
                     }
@@ -63,7 +67,8 @@ fun ContactVetPage(viewModel: VetContactViewModel = viewModel()) {
 
             Text(validationMessage, style = MaterialTheme.typography.bodyLarge)
         }
-    }}
+    }
+}
 
 fun validateContactDetails(phoneNumber: String, emailAddress: String): Boolean {
     val phonePattern = "^\\+?[0-9]{10,13}$".toRegex()

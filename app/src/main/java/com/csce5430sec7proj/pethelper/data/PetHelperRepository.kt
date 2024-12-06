@@ -5,11 +5,13 @@ import com.csce5430sec7proj.pethelper.data.daos.PetDao
 import com.csce5430sec7proj.pethelper.data.daos.RecordDao
 import com.csce5430sec7proj.pethelper.data.daos.VaccinationDao
 import com.csce5430sec7proj.pethelper.data.daos.VendorDao
+import com.csce5430sec7proj.pethelper.data.daos.VetContactDao
 import com.csce5430sec7proj.pethelper.data.entities.Appointment
 import com.csce5430sec7proj.pethelper.data.entities.Pet
 import com.csce5430sec7proj.pethelper.data.entities.Record
 import com.csce5430sec7proj.pethelper.data.entities.Vaccination
 import com.csce5430sec7proj.pethelper.data.entities.Vendor
+import com.csce5430sec7proj.pethelper.data.entities.VetContact
 import kotlinx.coroutines.flow.Flow
 
 
@@ -18,7 +20,8 @@ class PetHelperRepository(
     private val petDao: PetDao,
     private val recordDao: RecordDao,
     private val vaccinationDao: VaccinationDao,
-    private val vendorDao: VendorDao
+    private val vendorDao: VendorDao,
+    private val vetContactDao: VetContactDao
 ) {
     // Pets
     val getPets = petDao.getAll()
@@ -111,4 +114,18 @@ class PetHelperRepository(
     suspend fun deleteVendor(vendor: Vendor) {
         vendorDao.delete(vendor)
     }
+
+    // Vet Contacts
+    fun getAllVetContactsFlow() = vetContactDao.getAllContacts()
+
+    suspend fun insertVetContact(vetContact: VetContact) {
+        vetContactDao.insert(vetContact)
+    }
+
+
+
+    suspend fun deleteVetContact(vetContact: VetContact) {
+        vetContactDao.delete(vetContact)
+    }
+
 }

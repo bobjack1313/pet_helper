@@ -3,19 +3,22 @@ package com.csce5430sec7proj.pethelper.ui.records
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.csce5430sec7proj.pethelper.data.entities.VetContact
-import com.csce5430sec7proj.pethelper.data.daos.VetContactDao
+import com.csce5430sec7proj.pethelper.data.PetHelperRepository
+import com.csce5430sec7proj.pethelper.Graph
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collectLatest
 
 // 定义用于管理 UI 状态的数据类
 data class VetContactsState(
-    val contacts: List<VetContact> = emptyList()
+    val contacts: List<VetContact> = emptyList(),
+    val selectedContact: VetContact? = null
 )
 
 class VetContactViewModel(
-    private val dao: VetContactDao
+    private val repository: PetHelperRepository = Graph.repository // 直接使用 PetHelperRepository
 ) : ViewModel() {
 
     // 使用 StateFlow 管理 UI 状态
@@ -29,8 +32,9 @@ class VetContactViewModel(
     // 加载所有联系信息
     private fun loadContacts() {
         viewModelScope.launch {
-            val contacts = dao.getAllContacts()
-            _state.update { it.copy(contacts = contacts) }
+            repository.getAllVetContactsFlow().collectLatest { contacts ->
+                _state.update { it.copy(contacts = contacts) }
+            }
         }
     }
 
@@ -38,10 +42,17 @@ class VetContactViewModel(
     fun saveContact(phoneNumber: String, emailAddress: String, message: String) {
         val vetContact = VetContact(phoneNumber = phoneNumber, emailAddress = emailAddress, message = message)
         viewModelScope.launch {
-            dao.insert(vetContact)
+            repository.insertVetContact(vetContact)
             loadContacts() // 插入后重新加载数据更新 UI
         }
     }
 
-    fun getAllContacts(): StateFlow<VetContactsState> = state
+
+    // 删除联系信息
+    fun deleteContact(contact: VetContact) {
+        viewModelScope.launch {
+            repository.deleteVetContact(contact)
+            loadContacts() // 删除后重新加载数据更新 UI
+        }
+    }
 }
