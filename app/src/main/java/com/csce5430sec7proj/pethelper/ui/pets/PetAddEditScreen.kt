@@ -44,6 +44,11 @@ import java.util.*
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -52,6 +57,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.csce5430sec7proj.pethelper.utils.saveImageToStorage
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PetAddEditScreen(
     petId: Int?,
@@ -102,81 +108,107 @@ fun PetAddEditScreen(
         }
     )
 
-    // Add-Edit Layout
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(0.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        // Function to open date picker
-        fun showDatePicker() {
-            val calendar = Calendar.getInstance()
-            val datePickerDialog = DatePickerDialog(
-                context,
-                { _, year, month, dayOfMonth ->
-                    // Update the date of birth state
-                    val selectedDate = Calendar.getInstance().apply {
-                        set(year, month, dayOfMonth)
-                    }.time
-                    selectedPetState.value = selectedPetState.value.copy(dateOfBirth = selectedDate)
+    Scaffold(
+        topBar = {
+            androidx.compose.material3.CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = if (petId == null) stringResource(id = R.string.add_pet)
+                                else stringResource(id = R.string.update_pet),
+                        style = MaterialTheme.typography.titleLarge
+                    )
                 },
-                calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)
+                navigationIcon = {
+                    IconButton(onClick = { onNavigateBack() }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(id = R.string.back)
+                        )
+                    }
+                }
             )
-            datePickerDialog.show()
         }
-        // Image Upload Section
-        Box(
-            modifier = Modifier
-                .size(250.dp)
-                .clip(CircleShape)
-                .background(Color.Gray)
-                .clickable { imagePickerLauncher.launch("image/*") }
-        ) {
-            val petImagePath = selectedPetState.value.imagePath
-
-            if (!petImagePath.isNullOrEmpty()) {
-//            if (selectedImageUri != null) {
-                // Display the selected image
-                Image(
-                    painter = rememberAsyncImagePainter(model = petImagePath),
-                    contentDescription = stringResource(id = R.string.selected_pet_image),
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
-            } else {
-                // Placeholder for pet image
-                Icon(
-                    imageVector = Icons.Default.AccountCircle,
-                    contentDescription = stringResource(id = R.string.add_pet_image),
-                    modifier = Modifier.align(Alignment.Center).size(100.dp)
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        LazyColumn(
+    ) { paddingValues ->
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 16.dp)
+                .padding(paddingValues)
         ) {
-            item {
-                // Name Field
-                TextField(
-                    value = selectedPetState.value.name,
-                    onValueChange = {
-                        selectedPetState.value = selectedPetState.value.copy(name = it)
-                    },
-                    label = { Text(stringResource(id = R.string.name_hint)) },
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
-                )
+            // Add-Edit Layout
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White)
+                    .padding(0.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                // Function to open date picker
+                fun showDatePicker() {
+                    val calendar = Calendar.getInstance()
+                    val datePickerDialog = DatePickerDialog(
+                        context,
+                        { _, year, month, dayOfMonth ->
+                            // Update the date of birth state
+                            val selectedDate = Calendar.getInstance().apply {
+                                set(year, month, dayOfMonth)
+                            }.time
+                            selectedPetState.value = selectedPetState.value.copy(dateOfBirth = selectedDate)
+                        },
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH)
+                    )
+                    datePickerDialog.show()
+                }
+                // Image Upload Section
+                Box(
+                    modifier = Modifier
+                        .size(250.dp)
+                        .clip(CircleShape)
+                        .background(Color.Gray)
+                        .clickable { imagePickerLauncher.launch("image/*") }
+                ) {
+                    val petImagePath = selectedPetState.value.imagePath
 
-                // Pet Type Dropdown
+                    if (!petImagePath.isNullOrEmpty()) {
+//            if (selectedImageUri != null) {
+                        // Display the selected image
+                        Image(
+                            painter = rememberAsyncImagePainter(model = petImagePath),
+                            contentDescription = stringResource(id = R.string.selected_pet_image),
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        // Placeholder for pet image
+                        Icon(
+                            imageVector = Icons.Default.AccountCircle,
+                            contentDescription = stringResource(id = R.string.add_pet_image),
+                            modifier = Modifier.align(Alignment.Center).size(100.dp)
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp)
+                ) {
+                    item {
+                        // Name Field
+                        TextField(
+                            value = selectedPetState.value.name,
+                            onValueChange = {
+                                selectedPetState.value = selectedPetState.value.copy(name = it)
+                            },
+                            label = { Text(stringResource(id = R.string.name_hint)) },
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                        )
+
+                        // Pet Type Dropdown
 //                EnumDropDownMenu(
 //                    selectedValue = selectedPetState.value.type,
 //                    label = "Pet Type",
@@ -185,27 +217,27 @@ fun PetAddEditScreen(
 //                        selectedPetState.value = selectedPetState.value.copy(type = it)
 //                    }
 //                )
-                EnumDropDownMenu(
-                    selectedValue = selectedPetState.value.type, // Get the current type from the selected pet state
-                    label = stringResource(id = R.string.type_hint),
-                    options = PetType.entries.toTypedArray(),
-                    onSelectionChange = { selectedType ->
-                        // Update the selected pet state with the new pet type
-                        selectedPetState.value = selectedPetState.value.copy(type = selectedType)
-                    }
-                )
+                        EnumDropDownMenu(
+                            selectedValue = selectedPetState.value.type, // Get the current type from the selected pet state
+                            label = stringResource(id = R.string.type_hint),
+                            options = PetType.entries.toTypedArray(),
+                            onSelectionChange = { selectedType ->
+                                // Update the selected pet state with the new pet type
+                                selectedPetState.value = selectedPetState.value.copy(type = selectedType)
+                            }
+                        )
 
-                // Breed Field
-                TextField(
-                    value = selectedPetState.value.breed ?: "",
-                    onValueChange = {
-                        selectedPetState.value = selectedPetState.value.copy(breed = it)
-                    },
-                    label = { Text(stringResource(id = R.string.breed_hint)) },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                        // Breed Field
+                        TextField(
+                            value = selectedPetState.value.breed ?: "",
+                            onValueChange = {
+                                selectedPetState.value = selectedPetState.value.copy(breed = it)
+                            },
+                            label = { Text(stringResource(id = R.string.breed_hint)) },
+                            modifier = Modifier.fillMaxWidth()
+                        )
 
-                // Breed Field
+                        // Breed Field
 //        selectedPetState.value.breed?.let {
 //            TextField(
 //                value = it,
@@ -215,143 +247,146 @@ fun PetAddEditScreen(
 //            )
 //        }
 
-                // Color Field
-                selectedPetState.value.color?.let {
-                    TextField(
-                        value = it,
-                        onValueChange = {
-                            selectedPetState.value = selectedPetState.value.copy(color = it)
-                        },
-                        label = { Text(stringResource(id = R.string.color_hint)) },
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
-                    )
-                }
-
-                // Pet Gender Dropdown
-                EnumDropDownMenu(
-                    selectedValue = selectedPetState.value.gender ?: PetGender.OTHER,
-                    label = stringResource(id = R.string.gender_hint),
-                    options = PetGender.entries.toTypedArray(),
-                    onSelectionChange = {
-                        selectedPetState.value = selectedPetState.value.copy(gender = it)
-                    }
-                )
-
-                // Date of Birth Field
-                TextField(
-                    value = selectedPetState.value.dateOfBirth?.let {
-                        SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(it)
-                    } ?: "", // Provide an empty string if dateOfBirth is null
-                    onValueChange = { /* No-op, since we're using a DatePicker */ },
-                    label = { Text(stringResource(id = R.string.date_of_birth_hint)) },
-                    readOnly = true,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp)
-                        .clickable { showDatePicker() }
-                )
-
-                // Weight Field with kg/lbs toggle
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    TextField(
-                        value = selectedPetState.value.weight.toString() + txtUnit,
-                        onValueChange = {
-                            selectedPetState.value =
-                                selectedPetState.value.copy(weight = it.toDoubleOrNull() ?: 0.0)
-                        },
-                        label = { Text(stringResource(id = R.string.weight_hint)) },
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-
-                // Sterilized Toggle
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
-                ) {
-                    Text(stringResource(id = R.string.neutered_spayed))
-                    Switch(
-                        checked = selectedPetState.value.sterilized ?: false,
-                        onCheckedChange = {
-                            selectedPetState.value = selectedPetState.value.copy(sterilized = it)
+                        // Color Field
+                        selectedPetState.value.color?.let {
+                            TextField(
+                                value = it,
+                                onValueChange = {
+                                    selectedPetState.value = selectedPetState.value.copy(color = it)
+                                },
+                                label = { Text(stringResource(id = R.string.color_hint)) },
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                            )
                         }
-                    )
-                }
 
-                // Allergies
-                TextField(
-                    value = selectedPetState.value.allergies?.joinToString(", ") ?: "",
-                    onValueChange = {
-                        selectedPetState.value =
-                            selectedPetState.value.copy(allergies = it.split(",").map { it.trim() })
-                    },
-                    label = { Text(stringResource(id = R.string.allergies_hint)) },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                // Diet Field
-                TextField(
-                    value = selectedPetState.value.diet ?: "",
-                    onValueChange = {
-                        selectedPetState.value = selectedPetState.value.copy(diet = it)
-                    },
-                    label = { Text(stringResource(id = R.string.diet_hint)) },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                // Training Field
-                TextField(
-                    value = selectedPetState.value.training ?: "",
-                    onValueChange = {
-                        selectedPetState.value = selectedPetState.value.copy(training = it)
-                    },
-                    label = { Text(stringResource(id = R.string.training_hint)) },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                // Titles
-                TextField(
-                    value = selectedPetState.value.titles?.joinToString(", ") ?: "",
-                    onValueChange = {
-                        selectedPetState.value =
-                            selectedPetState.value.copy(titles = it.split(",").map { it.trim() })
-                    },
-                    label = { Text(stringResource(id = R.string.titles_hint)) },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                // Notes
-                TextField(
-                    value = selectedPetState.value.notes ?: "",
-                    onValueChange = {
-                        selectedPetState.value = selectedPetState.value.copy(notes = it)
-                    },
-                    label = { Text(stringResource(id = R.string.notes_hint)) },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(
-                    onClick = {
-                        if (petId == null) {
-                            viewModel.addPet(selectedPetState.value)
-                        } else {
-                            viewModel.updatePet(selectedPetState.value)
-                        }
-                        onNavigateBack()
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = if (petId == null) stringResource(id = R.string.add_pet) else stringResource(
-                            id = R.string.update_pet
+                        // Pet Gender Dropdown
+                        EnumDropDownMenu(
+                            selectedValue = selectedPetState.value.gender ?: PetGender.OTHER,
+                            label = stringResource(id = R.string.gender_hint),
+                            options = PetGender.entries.toTypedArray(),
+                            onSelectionChange = {
+                                selectedPetState.value = selectedPetState.value.copy(gender = it)
+                            }
                         )
-                    )
+
+                        // Date of Birth Field
+                        TextField(
+                            value = selectedPetState.value.dateOfBirth?.let {
+                                SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(it)
+                            } ?: "", // Provide an empty string if dateOfBirth is null
+                            onValueChange = { /* No-op, since we're using a DatePicker */ },
+                            label = { Text(stringResource(id = R.string.date_of_birth_hint)) },
+                            readOnly = true,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp)
+                                .clickable { showDatePicker() }
+                        )
+
+                        // Weight Field with kg/lbs toggle
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            TextField(
+                                value = selectedPetState.value.weight.toString() + txtUnit,
+                                onValueChange = {
+                                    selectedPetState.value =
+                                        selectedPetState.value.copy(weight = it.toDoubleOrNull() ?: 0.0)
+                                },
+                                label = { Text(stringResource(id = R.string.weight_hint)) },
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
+
+                        // Sterilized Toggle
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                        ) {
+                            Text(stringResource(id = R.string.neutered_spayed))
+                            Switch(
+                                checked = selectedPetState.value.sterilized ?: false,
+                                onCheckedChange = {
+                                    selectedPetState.value = selectedPetState.value.copy(sterilized = it)
+                                }
+                            )
+                        }
+
+                        // Allergies
+                        TextField(
+                            value = selectedPetState.value.allergies?.joinToString(", ") ?: "",
+                            onValueChange = {
+                                selectedPetState.value =
+                                    selectedPetState.value.copy(allergies = it.split(",").map { it.trim() })
+                            },
+                            label = { Text(stringResource(id = R.string.allergies_hint)) },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        // Diet Field
+                        TextField(
+                            value = selectedPetState.value.diet ?: "",
+                            onValueChange = {
+                                selectedPetState.value = selectedPetState.value.copy(diet = it)
+                            },
+                            label = { Text(stringResource(id = R.string.diet_hint)) },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        // Training Field
+                        TextField(
+                            value = selectedPetState.value.training ?: "",
+                            onValueChange = {
+                                selectedPetState.value = selectedPetState.value.copy(training = it)
+                            },
+                            label = { Text(stringResource(id = R.string.training_hint)) },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        // Titles
+                        TextField(
+                            value = selectedPetState.value.titles?.joinToString(", ") ?: "",
+                            onValueChange = {
+                                selectedPetState.value =
+                                    selectedPetState.value.copy(titles = it.split(",").map { it.trim() })
+                            },
+                            label = { Text(stringResource(id = R.string.titles_hint)) },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        // Notes
+                        TextField(
+                            value = selectedPetState.value.notes ?: "",
+                            onValueChange = {
+                                selectedPetState.value = selectedPetState.value.copy(notes = it)
+                            },
+                            label = { Text(stringResource(id = R.string.notes_hint)) },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(
+                            onClick = {
+                                if (petId == null) {
+                                    viewModel.addPet(selectedPetState.value)
+                                } else {
+                                    viewModel.updatePet(selectedPetState.value)
+                                }
+                                onNavigateBack()
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = if (petId == null) stringResource(id = R.string.add_pet) else stringResource(
+                                    id = R.string.update_pet
+                                )
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
-        }}
+            }
+        }
     }
 }

@@ -23,9 +23,8 @@ fun TabBarContentScreen(
             modifier = Modifier,
         )
         1 -> RecordsScreen(
-            navController = navController,  
-            onNavigate = { /* Handle navigation */ }
-        )
+            navController = navController,
+            )
         2 -> NotificationsScreen()
         3 -> SettingsScreen()
     }

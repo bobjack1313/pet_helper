@@ -46,7 +46,7 @@
     <string name="not_specified">Not specified</string>
     <string name="not_available">Not available</string>
     <string name="pet_records">Pet Records</string>
-    <string name="add_records">Add Record</string>
+    <string name="add_record">Add Record</string>
     <string name="record_details_title">%1$s Details</string>
     <string name="delete_record">Delete Record</string>
     <string name="description_hint">Description</string>
@@ -59,4 +59,10 @@
     <string name="record_date">Date: %1$s</string>
     <string name="no_date">No Date</string>
     <string name="content_type_empty">%1$s is empty</string>
+    <string name="update_record">Update Record</string>
+    <string name="select_pet">Select Pet</string>
+    <string name="date_hint">Date</string>
+    <string name="back">Back</string>
+    <string name="scan_PDF">Scan PDF</string>
+    <string name="import_PDF">Import PDF</string>
 </resources>

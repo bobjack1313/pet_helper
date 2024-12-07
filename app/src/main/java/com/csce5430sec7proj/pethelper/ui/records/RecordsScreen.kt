@@ -26,14 +26,15 @@ import java.util.*
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.compose.composable
 import com.csce5430sec7proj.pethelper.R
+
 
 
 @Composable
 fun RecordsScreen(
     navController: NavController,
     recordsViewModel: RecordsViewModel = viewModel(),
-    onNavigate: (String) -> Unit = {}
 ) {
     val recordsState by recordsViewModel.state.collectAsState()
     val selectedTabIndex by recordsViewModel.selectedTabIndex
@@ -48,9 +49,10 @@ fun RecordsScreen(
     Scaffold(
         topBar = { TopAppBar(title = { Text(stringResource(id = R.string.pet_records)) }) },
         floatingActionButton = {
-            FloatingActionButton(onClick = { recordsViewModel.showAddDialog() }) {
-                Icon(Icons.Default.Add, contentDescription = stringResource(
-                    id = R.string.add_records))
+            FloatingActionButton(onClick = {
+                navController.navigate("record_edit_screen")
+            }) {
+                Icon(Icons.Default.Add, contentDescription = stringResource(id = R.string.add_record))
             }
         }
     ) { padding ->
@@ -72,99 +74,99 @@ fun RecordsScreen(
         }
     }
 
-    if (recordsState.isAddDialogVisible) {
-        AddRecordDialog(viewModel = recordsViewModel, recordType = tabs[selectedTabIndex])
-    }
+//    if (recordsState.isAddDialogVisible) {
+//        AddRecordDialog(viewModel = recordsViewModel, recordType = tabs[selectedTabIndex])
+//    }
 }
 
-@Composable
-fun AddRecordDialog(viewModel: RecordsViewModel, recordType: RecordType) {
-    var description by remember { mutableStateOf("") }
-    var date by remember { mutableStateOf("") }
-    val coroutineScope = rememberCoroutineScope()
-    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    
-    val calendar = Calendar.getInstance()
-    val context = LocalContext.current
-
-    Dialog(onDismissRequest = { viewModel.hideAddDialog() }) {
-        Surface(
-            modifier = Modifier.padding(16.dp),
-            shape = MaterialTheme.shapes.medium
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Text(
-                    text = stringResource(
-                        id = R.string.add_new_record,
-                        recordType.name.replace("_", " ")
-                    ),
-                    style = MaterialTheme.typography.titleLarge
-                )
-                TextField(
-                    value = description,
-                    onValueChange = { description = it },
-                    label = { Text(stringResource(id = R.string.description_hint)) }
-                )
-                
-                OutlinedButton(
-                    onClick = {
-                        Log.d("DatePicker", "Date Picker Dialog triggered")
-                        try {
-                            DatePickerDialog(
-                                context,
-                                { _, year, month, dayOfMonth ->
-                                    calendar.set(year, month, dayOfMonth)
-                                    date = dateFormat.format(calendar.time)
-                                },
-                                calendar.get(Calendar.YEAR),
-                                calendar.get(Calendar.MONTH),
-                                calendar.get(Calendar.DAY_OF_MONTH)
-                            ).show()
-                        } catch (e: Exception) {
-                            Log.e("DatePicker", "Error showing Date Picker Dialog", e)
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(if (date.isNotBlank()) date else stringResource(id = R.string.select_date))
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    TextButton(onClick = { viewModel.hideAddDialog() }) {
-                        Text(stringResource(id = R.string.cancel)) }
-                    TextButton(onClick = {
-                        if (description.isNotBlank() && date.isNotBlank()) {
-                            try {
-                                val parsedDate = dateFormat.parse(date)
-                                coroutineScope.launch {
-                                    viewModel.addRecord(
-                                        Record(
-                                            type = recordType,
-                                            description = description,
-                                            date = parsedDate,
-                                            petIdFk = 0,
-                                            vendorIdFk = null,
-                                            cost = 0.0
-                                        )
-                                    )
-                                    viewModel.hideAddDialog()
-                                }
-                            } catch (e: Exception) {
-                                Log.e("AddRecord", "Error adding record", e)
-                            }
-                        }
-                    }) { Text(stringResource(id = R.string.save)) }
-                }
-            }
-        }
-    }
-}
+//@Composable
+//fun AddRecordDialog(viewModel: RecordsViewModel, recordType: RecordType) {
+//    var description by remember { mutableStateOf("") }
+//    var date by remember { mutableStateOf("") }
+//    val coroutineScope = rememberCoroutineScope()
+//    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+//
+//    val calendar = Calendar.getInstance()
+//    val context = LocalContext.current
+//
+//    Dialog(onDismissRequest = { viewModel.hideAddDialog() }) {
+//        Surface(
+//            modifier = Modifier.padding(16.dp),
+//            shape = MaterialTheme.shapes.medium
+//        ) {
+//            Column(
+//                modifier = Modifier.padding(16.dp),
+//                verticalArrangement = Arrangement.spacedBy(8.dp)
+//            ) {
+//                Text(
+//                    text = stringResource(
+//                        id = R.string.add_new_record,
+//                        recordType.name.replace("_", " ")
+//                    ),
+//                    style = MaterialTheme.typography.titleLarge
+//                )
+//                TextField(
+//                    value = description,
+//                    onValueChange = { description = it },
+//                    label = { Text(stringResource(id = R.string.description_hint)) }
+//                )
+//
+//                OutlinedButton(
+//                    onClick = {
+//                        Log.d("DatePicker", "Date Picker Dialog triggered")
+//                        try {
+//                            DatePickerDialog(
+//                                context,
+//                                { _, year, month, dayOfMonth ->
+//                                    calendar.set(year, month, dayOfMonth)
+//                                    date = dateFormat.format(calendar.time)
+//                                },
+//                                calendar.get(Calendar.YEAR),
+//                                calendar.get(Calendar.MONTH),
+//                                calendar.get(Calendar.DAY_OF_MONTH)
+//                            ).show()
+//                        } catch (e: Exception) {
+//                            Log.e("DatePicker", "Error showing Date Picker Dialog", e)
+//                        }
+//                    },
+//                    modifier = Modifier.fillMaxWidth()
+//                ) {
+//                    Text(if (date.isNotBlank()) date else stringResource(id = R.string.select_date))
+//                }
+//
+//                Row(
+//                    modifier = Modifier.fillMaxWidth(),
+//                    horizontalArrangement = Arrangement.End
+//                ) {
+//                    TextButton(onClick = { viewModel.hideAddDialog() }) {
+//                        Text(stringResource(id = R.string.cancel)) }
+//                    TextButton(onClick = {
+//                        if (description.isNotBlank() && date.isNotBlank()) {
+//                            try {
+//                                val parsedDate = dateFormat.parse(date)
+//                                coroutineScope.launch {
+//                                    viewModel.addRecord(
+//                                        Record(
+//                                            type = recordType,
+//                                            description = description,
+//                                            date = parsedDate,
+//                                            petIdFk = 0,
+//                                            vendorIdFk = null,
+//                                            cost = 0.0
+//                                        )
+//                                    )
+//                                    viewModel.hideAddDialog()
+//                                }
+//                            } catch (e: Exception) {
+//                                Log.e("AddRecord", "Error adding record", e)
+//                            }
+//                        }
+//                    }) { Text(stringResource(id = R.string.save)) }
+//                }
+//            }
+//        }
+//    }
+//}
 
 @Composable
 fun RecordContent(
@@ -174,7 +176,7 @@ fun RecordContent(
 ) {
     if (records.isEmpty()) {
         EmptyContent(stringResource(id = R.string.no_records_available)) {
-            recordsViewModel.showAddDialog()
+           // recordsViewModel.showAddDialog()
         }
     } else {
         LazyColumn(
@@ -225,8 +227,8 @@ fun EmptyContent(contentType: String, onAddClick: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text( text = stringResource(id = R.string.content_type_empty, contentType))
+        Text( text = contentType)
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onAddClick) { Text(stringResource(id = R.string.add_records)) }
+        Button(onClick = onAddClick) { Text(stringResource(id = R.string.add_record)) }
     }
 }
