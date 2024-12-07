@@ -70,7 +70,9 @@ fun PetAddEditScreen(
         }
     }
     val context = LocalContext.current
-
+    val txtImgSelCan = stringResource(id = R.string.image_selection_cancelled)
+    val txtUnit =   if (isMetric) stringResource(id = R.string.weight_kg)
+                    else (stringResource(id = R.string.weight_lbs))
     // Mutable state for the selected pet
     val selectedPetState = remember(petId) {
         mutableStateOf(pet ?: Pet(
@@ -95,7 +97,7 @@ fun PetAddEditScreen(
                 }
             } else {
                 // Use the context safely
-                Toast.makeText(context, "Image selection cancelled", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, txtImgSelCan, Toast.LENGTH_SHORT).show()
             }
         }
     )
@@ -142,7 +144,7 @@ fun PetAddEditScreen(
                 // Display the selected image
                 Image(
                     painter = rememberAsyncImagePainter(model = petImagePath),
-                    contentDescription = "Selected Pet Image",
+                    contentDescription = stringResource(id = R.string.selected_pet_image),
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
@@ -150,7 +152,7 @@ fun PetAddEditScreen(
                 // Placeholder for pet image
                 Icon(
                     imageVector = Icons.Default.AccountCircle,
-                    contentDescription = "Add Pet Image",
+                    contentDescription = stringResource(id = R.string.add_pet_image),
                     modifier = Modifier.align(Alignment.Center).size(100.dp)
                 )
             }
@@ -170,7 +172,7 @@ fun PetAddEditScreen(
                     onValueChange = {
                         selectedPetState.value = selectedPetState.value.copy(name = it)
                     },
-                    label = { Text("Name") },
+                    label = { Text(stringResource(id = R.string.name_hint)) },
                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                 )
 
@@ -185,7 +187,7 @@ fun PetAddEditScreen(
 //                )
                 EnumDropDownMenu(
                     selectedValue = selectedPetState.value.type, // Get the current type from the selected pet state
-                    label = "Pet Type",
+                    label = stringResource(id = R.string.type_hint),
                     options = PetType.entries.toTypedArray(),
                     onSelectionChange = { selectedType ->
                         // Update the selected pet state with the new pet type
@@ -199,7 +201,7 @@ fun PetAddEditScreen(
                     onValueChange = {
                         selectedPetState.value = selectedPetState.value.copy(breed = it)
                     },
-                    label = { Text("Breed") },
+                    label = { Text(stringResource(id = R.string.breed_hint)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -220,7 +222,7 @@ fun PetAddEditScreen(
                         onValueChange = {
                             selectedPetState.value = selectedPetState.value.copy(color = it)
                         },
-                        label = { Text("Color") },
+                        label = { Text(stringResource(id = R.string.color_hint)) },
                         modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                     )
                 }
@@ -228,7 +230,7 @@ fun PetAddEditScreen(
                 // Pet Gender Dropdown
                 EnumDropDownMenu(
                     selectedValue = selectedPetState.value.gender ?: PetGender.OTHER,
-                    label = "Gender",
+                    label = stringResource(id = R.string.gender_hint),
                     options = PetGender.entries.toTypedArray(),
                     onSelectionChange = {
                         selectedPetState.value = selectedPetState.value.copy(gender = it)
@@ -255,25 +257,14 @@ fun PetAddEditScreen(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     TextField(
-                        value = selectedPetState.value.weight.toString(),
+                        value = selectedPetState.value.weight.toString() + txtUnit,
                         onValueChange = {
                             selectedPetState.value =
                                 selectedPetState.value.copy(weight = it.toDoubleOrNull() ?: 0.0)
                         },
-                        label = { Text("Weight") },
+                        label = { Text(stringResource(id = R.string.weight_hint)) },
                         modifier = Modifier.weight(1f)
                     )
-
-                    // Toggle for kg/lbs
-                    Switch(
-                        //checked = selectedPetState.value.isWeightInKg,
-                        //onCheckedChange = { selectedPetState.value = selectedPetState.value.copy(isWeightInKg = it) },
-                        checked = isMetric,
-                        onCheckedChange = { isMetric },
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-//            Text(text = if (selectedPetState.value.isWeightInKg) "kg" else "lbs")
-                    Text(text = if (isMetric) "kg" else "lbs")
                 }
 
                 // Sterilized Toggle
@@ -281,7 +272,7 @@ fun PetAddEditScreen(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                 ) {
-                    Text("Sterilized")
+                    Text(stringResource(id = R.string.neutered_spayed))
                     Switch(
                         checked = selectedPetState.value.sterilized ?: false,
                         onCheckedChange = {
@@ -297,7 +288,7 @@ fun PetAddEditScreen(
                         selectedPetState.value =
                             selectedPetState.value.copy(allergies = it.split(",").map { it.trim() })
                     },
-                    label = { Text("Allergies") },
+                    label = { Text(stringResource(id = R.string.allergies_hint)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -307,7 +298,7 @@ fun PetAddEditScreen(
                     onValueChange = {
                         selectedPetState.value = selectedPetState.value.copy(diet = it)
                     },
-                    label = { Text("Diet") },
+                    label = { Text(stringResource(id = R.string.diet_hint)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -317,7 +308,7 @@ fun PetAddEditScreen(
                     onValueChange = {
                         selectedPetState.value = selectedPetState.value.copy(training = it)
                     },
-                    label = { Text("Training") },
+                    label = { Text(stringResource(id = R.string.training_hint)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -328,7 +319,7 @@ fun PetAddEditScreen(
                         selectedPetState.value =
                             selectedPetState.value.copy(titles = it.split(",").map { it.trim() })
                     },
-                    label = { Text("Titles") },
+                    label = { Text(stringResource(id = R.string.titles_hint)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 
@@ -338,7 +329,7 @@ fun PetAddEditScreen(
                     onValueChange = {
                         selectedPetState.value = selectedPetState.value.copy(notes = it)
                     },
-                    label = { Text("Notes") },
+                    label = { Text(stringResource(id = R.string.notes_hint)) },
                     modifier = Modifier.fillMaxWidth()
                 )
 

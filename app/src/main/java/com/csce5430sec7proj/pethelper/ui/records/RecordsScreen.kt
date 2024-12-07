@@ -25,6 +25,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.util.Log
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.res.stringResource
+import com.csce5430sec7proj.pethelper.R
+
 
 @Composable
 fun RecordsScreen(
@@ -43,10 +46,11 @@ fun RecordsScreen(
     )
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Pet Records") }) },
+        topBar = { TopAppBar(title = { Text(stringResource(id = R.string.pet_records)) }) },
         floatingActionButton = {
             FloatingActionButton(onClick = { recordsViewModel.showAddDialog() }) {
-                Icon(Icons.Default.Add, contentDescription = "Add Record")
+                Icon(Icons.Default.Add, contentDescription = stringResource(
+                    id = R.string.add_records))
             }
         }
     ) { padding ->
@@ -92,12 +96,17 @@ fun AddRecordDialog(viewModel: RecordsViewModel, recordType: RecordType) {
                 modifier = Modifier.padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text("Add New ${recordType.name.replace("_", " ")} Record", style = MaterialTheme.typography.titleLarge)
-                
+                Text(
+                    text = stringResource(
+                        id = R.string.add_new_record,
+                        recordType.name.replace("_", " ")
+                    ),
+                    style = MaterialTheme.typography.titleLarge
+                )
                 TextField(
                     value = description,
                     onValueChange = { description = it },
-                    label = { Text("Description") }
+                    label = { Text(stringResource(id = R.string.description_hint)) }
                 )
                 
                 OutlinedButton(
@@ -120,14 +129,15 @@ fun AddRecordDialog(viewModel: RecordsViewModel, recordType: RecordType) {
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(if (date.isNotBlank()) date else "Select Date")
+                    Text(if (date.isNotBlank()) date else stringResource(id = R.string.select_date))
                 }
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
                 ) {
-                    TextButton(onClick = { viewModel.hideAddDialog() }) { Text("Cancel") }
+                    TextButton(onClick = { viewModel.hideAddDialog() }) {
+                        Text(stringResource(id = R.string.cancel)) }
                     TextButton(onClick = {
                         if (description.isNotBlank() && date.isNotBlank()) {
                             try {
@@ -149,7 +159,7 @@ fun AddRecordDialog(viewModel: RecordsViewModel, recordType: RecordType) {
                                 Log.e("AddRecord", "Error adding record", e)
                             }
                         }
-                    }) { Text("Save") }
+                    }) { Text(stringResource(id = R.string.save)) }
                 }
             }
         }
@@ -163,7 +173,7 @@ fun RecordContent(
     records: List<Record>
 ) {
     if (records.isEmpty()) {
-        EmptyContent("No Records Available") {
+        EmptyContent(stringResource(id = R.string.no_records_available)) {
             recordsViewModel.showAddDialog()
         }
     } else {
@@ -172,20 +182,34 @@ fun RecordContent(
         ) {
             items(records) { record ->
                 ListItem(
-                    headlineContent = { Text(record.description ?: "No Description") },
-                    supportingContent = { Text("Date: ${record.date?.let { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(it) } ?: "No Date"}") },
+                    headlineContent = { Text(record.description ?: stringResource(
+                        id = R.string.no_description)) },
+                    supportingContent = {
+                        Text(
+                            text = stringResource(
+                                id = R.string.record_date,
+                                record.date?.let {
+                                    SimpleDateFormat("yyyy-MM-dd",
+                                        Locale.getDefault()).format(it)
+                                } ?: stringResource(id = R.string.no_date)
+                            )
+                        )
+                    },
                     trailingContent = {
                         IconButton(onClick = {
                             recordsViewModel.deleteRecord(record)
                         }) {
-                            Icon(Icons.Default.Delete, contentDescription = "Delete Record")
+                            Icon(Icons.Default.Delete, contentDescription = stringResource(
+                                id = R.string.delete_record)
+                            )
                         }
                     },
                     modifier = Modifier.clickable {
-                        navController.navigate("record_detail_screen/${record.id}/${record.type.name}")
+                        navController.navigate(
+                            "record_detail_screen/${record.id}/${record.type.name}")
                     }
                 )
-                Divider()
+                HorizontalDivider()
             }
         }
     }
@@ -201,8 +225,8 @@ fun EmptyContent(contentType: String, onAddClick: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text("$contentType is empty")
+        Text( text = stringResource(id = R.string.content_type_empty, contentType))
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onAddClick) { Text("Add Record") }
+        Button(onClick = onAddClick) { Text(stringResource(id = R.string.add_records)) }
     }
 }

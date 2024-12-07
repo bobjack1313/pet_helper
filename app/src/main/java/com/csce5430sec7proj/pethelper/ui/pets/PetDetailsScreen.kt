@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -50,6 +51,14 @@ fun PetDetailsScreen(
     val petState = viewModel.state.collectAsState().value
     val pet: Pet? = petState.pets.find { it.id == petId }
     val petWithAge = pet?.let { viewModel.getPetWithAge(it) }
+    val isMetric: Boolean = remember {
+        when (Locale.getDefault().country) {
+            // Countries using imperial units
+            "US", "LR", "MM" -> false
+            // Default to metric
+            else -> true
+        }
+    }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -80,7 +89,7 @@ fun PetDetailsScreen(
                     // Load and display the pet's image
                     Image(
                         painter = rememberAsyncImagePainter(model = pet?.imagePath),
-                        contentDescription = "Pet Picture",
+                        contentDescription = stringResource(id = R.string.pet_picture),
                         modifier = Modifier
                             .fillMaxSize()
                             .clip(CircleShape),
@@ -90,7 +99,7 @@ fun PetDetailsScreen(
                     // Fallback placeholder image
                     Image(
                         painter = painterResource(id = R.drawable.pet_placeholder),
-                        contentDescription = "Pet Picture Placeholder",
+                        contentDescription = stringResource(id = R.string.pet_picture_placeholder),
                         modifier = Modifier
                             .fillMaxSize()
                             .clip(CircleShape),
@@ -119,37 +128,49 @@ fun PetDetailsScreen(
                 ) {
                     Column(modifier = Modifier.weight(1f).padding(end = 8.dp)) {
                         Text(
-                            text = "ID: ${pet.id}",
+                            text = stringResource(id = R.string.pet_id, pet.id.toString()),
                             style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp),
                             color = Color.Black
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Type: ${pet.type}",
+                            text = stringResource(id = R.string.pet_type, pet.type.toString()),
                             style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp),
                             color = Color.Black
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Gender: ${pet.gender ?: "Unknown"}",
+                            text = stringResource(
+                                id = R.string.pet_gender,
+                                pet.gender ?: stringResource(id = R.string.unknown)
+                            ),
                             style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp),
                             color = Color.Black
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Breed: ${pet.breed ?: "Unknown"}",
+                            text = stringResource(
+                                id = R.string.pet_breed,
+                                pet.breed ?: stringResource(id = R.string.unknown)
+                            ),
                             style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp),
                             color = Color.Black
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Color: ${pet.color ?: "Not specified"}",
+                            text = stringResource(
+                                id = R.string.pet_color,
+                                pet.color ?: stringResource(id = R.string.not_specified)
+                            ),
                             style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp),
                             color = Color.Black
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Microchip ID: ${pet.microchipId ?: "Not available"}",
+                            text = stringResource(
+                                id = R.string.pet_microchip_id,
+                                pet.microchipId ?: stringResource(id = R.string.not_available)
+                            ),
                             style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp),
                             color = Color.Black
                         )
@@ -157,23 +178,30 @@ fun PetDetailsScreen(
 
                     Column(modifier = Modifier.weight(1f).padding(start = 8.dp)) {
                         Text(
-                            text = "Age: ${age ?: "Unknown"} years",
+                            text = stringResource(
+                                id = R.string.pet_age,
+                                age?.toString() ?: stringResource(id = R.string.unknown)
+                            ),
                             style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp),
                             color = Color.Black
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Date of Birth: ${
-                                pet.dateOfBirth?.let { SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(it) }
-                                    ?: "Unknown"
-                            }",
+                            text = stringResource(
+                                id = R.string.pet_date_of_birth,
+                                pet.dateOfBirth?.let {
+                                    SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(it)
+                                } ?: stringResource(id = R.string.unknown)
+                            ),
                             style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp),
                             color = Color.Black
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-
                         Text(
-                            text = "Weight: ${pet.weight ?: "Unknown"} kg",
+                            text = stringResource(
+                                id = if (isMetric) R.string.pet_weight_kg else R.string.pet_weight_lbs,
+                                pet.weight?.toString() ?: stringResource(id = R.string.unknown)
+                            ),
                             style = MaterialTheme.typography.bodyLarge.copy(fontSize = 22.sp),
                             color = Color.Black
                         )

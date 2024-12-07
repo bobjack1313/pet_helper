@@ -3,7 +3,6 @@
 package com.csce5430sec7proj.pethelper.ui.records
 
 import android.app.DatePickerDialog
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -12,22 +11,22 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.csce5430sec7proj.pethelper.data.daos.RecordDao
 import com.csce5430sec7proj.pethelper.data.entities.Record
 import com.csce5430sec7proj.pethelper.data.entities.RecordType
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.flow.firstOrNull
 import java.text.SimpleDateFormat
 import java.util.*
+import com.csce5430sec7proj.pethelper.R
 
 @Composable
 fun RecordDetailScreen(
     navController: NavController,
     recordId: Int,
     recordType: RecordType,
-    recordsViewModel: RecordsViewModel, // 使用 ViewModel 代替直接使用 recordDao
+    recordsViewModel: RecordsViewModel,
     onNavigate: (String) -> Unit = {}
 ) {
     val descriptionState = remember { mutableStateOf("") }
@@ -41,7 +40,7 @@ fun RecordDetailScreen(
 
     // 使用 LaunchedEffect 加载单个记录
     LaunchedEffect(recordId) {
-        val record = recordsViewModel.getRecordById(recordId) // 从 ViewModel 获取记录
+        val record = recordsViewModel.getRecordById(recordId)
         if (record != null) {
             descriptionState.value = record.description ?: ""
             dateState.value = record.date?.let { dateFormat.format(it) } ?: ""
@@ -51,15 +50,19 @@ fun RecordDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("${recordType.name.replace("_", " ")} Details") },
+                title = { Text(stringResource( id = R.string.record_details_title,
+                            recordType.name.replace("_", " "))) },
                 actions = {
                     IconButton(onClick = {
                         coroutineScope.launch {
-                            recordsViewModel.deleteRecord(Record(id = recordId, petIdFk = 0, type = recordType, description = descriptionState.value, date = null, vendorIdFk = 0, cost = 0.0)) // 从 ViewModel 中删除记录
+                            recordsViewModel.deleteRecord(Record(id = recordId, petIdFk = 0,
+                                type = recordType, description = descriptionState.value,
+                                date = null, vendorIdFk = 0, cost = 0.0))
                             navController.popBackStack()
                         }
                     }) {
-                        Icon(Icons.Default.Delete, contentDescription = "Delete Record")
+                        Icon(Icons.Default.Delete, contentDescription = stringResource(
+                            id = R.string.delete_record))
                     }
                 }
             )
@@ -77,7 +80,7 @@ fun RecordDetailScreen(
             TextField(
                 value = descriptionState.value,
                 onValueChange = { descriptionState.value = it },
-                label = { Text("Description") },
+                label = { Text(stringResource(id = R.string.description_hint)) },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -93,11 +96,16 @@ fun RecordDetailScreen(
                     calendar.get(Calendar.DAY_OF_MONTH)
                 ).show()
             }) {
-                Text("Select Date")
+                Text(stringResource(id = R.string.select_date))
             }
 
             // 显示选择的日期
-            Text("Selected Date: ${dateState.value}")
+            Text(
+                text = stringResource(
+                    id = R.string.selected_date,
+                    dateState.value ?: stringResource(id = R.string.unknown)
+                )
+            )
 
             // 保存按钮
             Button(
@@ -118,14 +126,14 @@ fun RecordDetailScreen(
                                 vendorIdFk = 0,
                                 cost = 0.0
                             )
-                            recordsViewModel.updateRecord(updatedRecord) // 从 ViewModel 更新记录
+                            recordsViewModel.updateRecord(updatedRecord)
                             navController.popBackStack()
                         }
                     }
                 },
                 modifier = Modifier.align(Alignment.End)
             ) {
-                Text("Save")
+                Text(stringResource(id = R.string.save))
             }
         }
     }
