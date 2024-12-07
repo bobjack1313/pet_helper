@@ -36,6 +36,14 @@ class PetsViewModel(
             }
         }
     }
+    fun getAllPets() {
+                viewModelScope.launch {
+                    repository.getAllPets.collectLatest { petsList ->
+                        _state.value = state.value.copy(pets = petsList)
+                    }
+                }
+            }
+
 
     // Updated getPet function to set the selected pet
     fun getPet(id: Int) {
@@ -61,6 +69,15 @@ class PetsViewModel(
     fun updatePet(pet: Pet) {
         viewModelScope.launch {
             repository.updatePet(pet)
+        }
+    }
+
+
+    fun getArchivedPets() {
+        viewModelScope.launch {
+            repository.getArchivedPets().collectLatest { archivedPetsList ->
+                _state.value = state.value.copy(pets = archivedPetsList)
+            }
         }
     }
 
@@ -109,6 +126,9 @@ class PetsViewModel(
             return pet to null
         }
     }
+
+
+
 }
 
 

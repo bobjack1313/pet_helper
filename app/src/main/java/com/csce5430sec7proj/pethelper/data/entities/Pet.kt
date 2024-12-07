@@ -54,4 +54,7 @@ data class Pet(
     val training: String? = null,
     val titles: List<String>? = null,
     val notes: String? = null,
+    val archived: Boolean = false,
 )
+
+

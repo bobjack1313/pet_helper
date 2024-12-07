@@ -27,4 +27,10 @@ interface PetDao {
 
     @Query("SELECT * from pets ORDER BY pet_name ASC")
     fun getAll(): Flow<List<Pet>>
+
+    @Query("SELECT * FROM pets WHERE archived = 0 ORDER BY pet_name ASC")
+    fun getAllPets(): Flow<List<Pet>>
+
+    @Query("SELECT * FROM pets WHERE archived = 1 ORDER BY pet_name ASC")
+    fun getArchivedPets(): Flow<List<Pet>>
 }

@@ -21,7 +21,8 @@ class PetHelperRepository(
     private val vendorDao: VendorDao
 ) {
     // Pets
-    val getPets = petDao.getAll()
+    val getAllPets = petDao.getAll()
+    val getPets = petDao.getAllPets()
     fun getPet(id: Int) = petDao.getPet(id)
 
     suspend fun insertPet(pet: Pet) {
@@ -34,7 +35,9 @@ class PetHelperRepository(
     suspend fun deletePet(pet: Pet) {
        petDao.delete(pet)
     }
-
+    fun getArchivedPets(): Flow<List<Pet>> {
+        return petDao.getArchivedPets()
+    }
     // Appointments
     val getAppointments = appointmentDao.getAll()
     fun getAppointment(id: Int) = appointmentDao.getAppointment(id)
