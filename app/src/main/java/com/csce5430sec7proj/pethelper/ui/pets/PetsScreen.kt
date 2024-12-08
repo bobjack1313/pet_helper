@@ -35,6 +35,7 @@ fun PetsScreen(
 ) {
     val viewModel: PetsViewModel = viewModel()
     val petsState by viewModel.state.collectAsState()
+    val isShowingArchived by viewModel.isShowingArchived.collectAsState()
 
     Column(
         modifier = modifier
@@ -43,22 +44,27 @@ fun PetsScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-// Toggle button to switch between normal and archived pets
+        // Toggle button to switch between normal and archived pets
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically ) {
-            Button( onClick = { viewModel.toggleShowArchived() },
-                modifier = Modifier.weight(1f) ) {
-                Text( text = if (viewModel.isShowingArchived) {
-                    stringResource(id = R.string.show_active_pets)
-                } else {
-                    stringResource(id = R.string.show_archived_pets) }
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Button(
+                onClick = {
+                    viewModel.toggleShowArchived()
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = if (isShowingArchived) {
+                                stringResource(id = R.string.show_active_pets)
+                            } else {
+                                stringResource(id = R.string.show_archived_pets)
+                            }
                 ) }
         }
-
-
         if (petsState.pets.isEmpty()) {
             Column(
                 modifier = modifier
