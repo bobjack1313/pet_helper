@@ -27,7 +27,7 @@ import com.csce5430sec7proj.pethelper.data.entities.Vaccination
 @TypeConverters(value = [Converters::class])
 @Database(entities = [Pet::class, Record::class, Appointment::class, Vendor::class,
                      Vaccination::class],
-    version = 3, exportSchema = false)
+    version = 4, exportSchema = false)
 abstract class PetHelperDatabase : RoomDatabase() {
     abstract fun petDao(): PetDao
     abstract fun recordDao(): RecordDao
