@@ -59,4 +59,9 @@
     <string name="record_date">Date: %1$s</string>
     <string name="no_date">No Date</string>
     <string name="content_type_empty">%1$s is empty</string>
+    <string name="archive">Archive</string>
+    <string name="unarchive">Unarchive</string>
+    <string name="delete">Delete</string>
+    <string name="show_active_pets">Show Active Pets</string>
+    <string name="show_archived_pets">Show Archived Pets</string>
 </resources>

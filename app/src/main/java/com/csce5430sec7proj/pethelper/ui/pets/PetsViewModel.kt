@@ -24,15 +24,21 @@ class PetsViewModel(
     val state: StateFlow<PetsState> get() = _state
     var selectedPet: MutableState<Pet?> = mutableStateOf(null)
         private set
-
+    var isShowingArchived by mutableStateOf(false)
+        private set
     init {
         getPets()
     }
-
     private fun getPets() {
         viewModelScope.launch {
-            repository.getPets.collectLatest { petsList ->
-                _state.value = state.value.copy(pets = petsList)
+            if (isShowingArchived) {
+                repository.getArchivedPets().collectLatest { petsList ->
+                    _state.value = state.value.copy(pets = petsList)
+                }
+            } else {
+                repository.getPets.collectLatest { petsList ->
+                    _state.value = state.value.copy(pets = petsList)
+                }
             }
         }
     }
@@ -126,7 +132,10 @@ class PetsViewModel(
             return pet to null
         }
     }
-
+    fun toggleShowArchived() {
+        isShowingArchived = !isShowingArchived
+        getPets()
+    }
 
 
 }

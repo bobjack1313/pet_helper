@@ -43,6 +43,22 @@ fun PetsScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+// Toggle button to switch between normal and archived pets
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically ) {
+            Button( onClick = { viewModel.toggleShowArchived() },
+                modifier = Modifier.weight(1f) ) {
+                Text( text = if (viewModel.isShowingArchived) {
+                    stringResource(id = R.string.show_active_pets)
+                } else {
+                    stringResource(id = R.string.show_archived_pets) }
+                ) }
+        }
+
+
         if (petsState.pets.isEmpty()) {
             Column(
                 modifier = modifier

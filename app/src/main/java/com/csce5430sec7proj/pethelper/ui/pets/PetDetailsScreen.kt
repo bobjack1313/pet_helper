@@ -26,6 +26,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
@@ -215,6 +217,116 @@ fun PetDetailsScreen(
                     modifier = Modifier.padding(top = 16.dp)
                 )
             }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Button(
+                    onClick = {
+                        pet?.let {
+                            viewModel.updatePet(it.copy(archived = !it.archived))
+                        }
+                    },
+                    modifier = Modifier.weight(1f).padding(end = 8.dp)
+                ) {
+                    Text(
+                        text = if (pet?.archived == true) {
+                            stringResource(id = R.string.unarchive)
+                        } else {
+                            stringResource(id = R.string.archive)
+                        }
+                    )
+                }
+                Button(
+                    onClick = {
+                        pet?.let {
+                            viewModel.deletePet(it)
+                            onNavigateBack()
+                        }
+                    },
+                    modifier = Modifier.weight(1f).padding(start = 8.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                ) {
+                    Text(text = stringResource(id = R.string.delete))
+                }
+            }
+             menuRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Button(
+                    onClick = {
+                        pet?.let {
+                            viewModel.updatePet(it.copy(archived = !it.archived))
+                        }
+                    },
+                    modifier = Modifier.weight(1f).padding(end = 8.dp)
+                ) {
+                    Text(
+                        text = if (pet?.archived == true) {
+                            stringResource(id = R.string.unarchive)
+                        } else {
+                            stringResource(id = R.string.archive)
+                        }
+                    )
+                }
+                Button(
+                    onClick = {
+                        pet?.let {
+                            viewModel.deletePet(it)
+                            onNavigateBack()
+                        }
+                    },
+                    modifier = Modifier.weight(1f).padding(start = 8.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                            Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Button(
+                        onClick = {
+                            pet?.let {
+                                viewModel.updatePet(it.copy(archived = !it.archived))
+                            }
+                        },
+                        modifier = Modifier.weight(1f).padding(end = 8.dp)
+                    ) {
+                        Text(
+                            text = if (pet?.archived == true) {
+                                stringResource(id = R.string.unarchive)
+                            } else {
+                                stringResource(id = R.string.archive)
+                            }
+                        )
+                    }
+                    Button(
+                        onClick = {
+                            pet?.let {
+                                viewModel.deletePet(it)
+                                onNavigateBack()
+                            }
+                        },
+                        modifier = Modifier.weight(1f).padding(start = 8.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                    ) {
+                        Text(text = stringResource(id = R.string.delete))
+                    }
+                }
+                  ) {
+                    Text(text = stringResource(id = R.string.delete))
+                }
+            }
+
+
         }
     }
 }
