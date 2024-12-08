@@ -18,8 +18,7 @@ import kotlinx.coroutines.flow.firstOrNull
 
 // 定义用于管理 UI 状态的数据类
 data class RecordsState(
-    val records: List<Record> = emptyList(),
-    val isAddDialogVisible: Boolean = false
+    val records: List<Record> = emptyList()
 )
 
 class RecordsViewModel(
@@ -58,15 +57,15 @@ class RecordsViewModel(
         }
     }
 
-    // 显示添加对话框
-    fun showAddDialog() {
-        _state.update { it.copy(isAddDialogVisible = true) }
-    }
-
-    // 隐藏添加对话框
-    fun hideAddDialog() {
-        _state.update { it.copy(isAddDialogVisible = false) }
-    }
+//    // 显示添加对话框
+//    fun showAddDialog() {
+//        _state.update { it.copy(isAddDialogVisible = true) }
+//    }
+//
+//    // 隐藏添加对话框
+//    fun hideAddDialog() {
+//        _state.update { it.copy(isAddDialogVisible = false) }
+//    }
 
     // 添加记录并更新列表
     fun addRecord(record: Record) {
