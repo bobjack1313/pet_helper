@@ -57,7 +57,7 @@ fun RecordDetailScreen(
                         coroutineScope.launch {
                             recordsViewModel.deleteRecord(Record(id = recordId, petIdFk = 0,
                                 type = recordType, description = descriptionState.value,
-                                date = null, vendorIdFk = 0, cost = 0.0))
+                                date = null, serviceIdFk = 0, cost = 0.0))
                             navController.popBackStack()
                         }
                     }) {
@@ -123,7 +123,7 @@ fun RecordDetailScreen(
                                 type = recordType,
                                 description = descriptionState.value,
                                 date = parsedDate,
-                                vendorIdFk = 0,
+                                serviceIdFk = 0,
                                 cost = 0.0
                             )
                             recordsViewModel.updateRecord(updatedRecord)

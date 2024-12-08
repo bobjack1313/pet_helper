@@ -22,8 +22,8 @@ data class Appointment(
     val description: String,
     @ColumnInfo(name = "appointment_date")
     val date: Date,
-    @ColumnInfo(name = "vendor_id_fk")
-    val vendorIdFk: Int = 0,
+    @ColumnInfo(name = "service_id_fk")
+    val serviceIdFk: Int = 0,
     @ColumnInfo(name = "appointment_service_type")
     val serviceType: String
 )

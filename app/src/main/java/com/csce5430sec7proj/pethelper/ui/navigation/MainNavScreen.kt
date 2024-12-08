@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
@@ -40,6 +41,7 @@ fun MainNavScreen(modifier: Modifier = Modifier,
     val tabItemList = listOf(
         NavTabItem(stringResource(id = R.string.tab_bar_pets), Icons.Default.AccountCircle, 0),
         NavTabItem(stringResource(id = R.string.tab_bar_records), Icons.Default.Create, 0),
+        NavTabItem(stringResource(id = R.string.tab_bar_services), Icons.Default.Face, 0),
         NavTabItem(stringResource(id = R.string.tab_bar_notifications), Icons.Default.Notifications, notificationsBadgeCount),
         NavTabItem(stringResource(id = R.string.tab_bar_settings), Icons.Default.Settings, 0),
     )
@@ -79,9 +81,10 @@ fun MainNavScreen(modifier: Modifier = Modifier,
         // Display content based on selected tab
         when (selectedTabIndex) {
             0 -> PetsNavHost(modifier = Modifier.padding(innerPadding))
-            1 -> RecordsNavHost(modifier = Modifier.padding(innerPadding),recordsViewModel = recordsViewModel) 
-            2 -> NotificationsNavHost(modifier = Modifier.padding(innerPadding))
-            3 -> SettingsNavHost(modifier = Modifier.padding(innerPadding))
+            1 -> RecordsNavHost(modifier = Modifier.padding(innerPadding),recordsViewModel = recordsViewModel)
+            2 -> ServicesNavHost(modifier = Modifier.padding(innerPadding))
+            3 -> NotificationsNavHost(modifier = Modifier.padding(innerPadding))
+            4 -> SettingsNavHost(modifier = Modifier.padding(innerPadding))
         }
     }
 }

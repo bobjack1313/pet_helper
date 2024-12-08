@@ -70,5 +70,15 @@
     <string name="delete">Delete</string>
     <string name="show_active_pets">Show Active Pets</string>
     <string name="show_archived_pets">Show Archived Pets</string>
+    <string name="add_service">Add Service</string>
+    <string name="tab_bar_services">Services</string>
+    <string name="update_service">Update Service</string>
+    <string name="address_hint">Address</string>
+    <string name="email_hint">Email</string>
+    <string name="phone_hint">Phone</string>
+    <string name="secondary_phone_hint">Secondary Phone</string>
+    <string name="service_picture">Service Picture</string>
+    <string name="loading_service_details">Loading service details</string>
+    <string name="select_service_type">Select Service Type</string>
     has context menu
 </resources>

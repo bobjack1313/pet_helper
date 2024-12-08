@@ -2,9 +2,9 @@
     <string name="app_name">pethelper</string>
     <string name="tab_bar_pets">Pets</string>
     <string name="tab_bar_records">Records</string>
-    <string name="tab_bar_notifications">Notifications</string>
-    <string name="tab_bar_settings">Settings</string>
-    <string name="name_hint">Name</string>
+    <string name="tab_bar_notifications">सूचनाएं</string>
+    <string name="tab_bar_settings">सेटिंग्स</string>
+    <string name="name_hint">नाम</string>
     <string name="add_pet">Add Pet</string>
     <string name="update_pet">Update Pet</string>
     <string name="pet_picture">Pet Picture</string>
@@ -70,4 +70,14 @@
     <string name="delete">Delete</string>
     <string name="show_active_pets">Show Active Pets</string>
     <string name="show_archived_pets">Show Archived Pets</string>
+    <string name="add_service">Add Service</string>
+    <string name="tab_bar_services">Services</string>
+    <string name="update_service">Update Service</string>
+    <string name="address_hint">Address</string>
+    <string name="email_hint">Email</string>
+    <string name="phone_hint">Phone</string>
+    <string name="secondary_phone_hint">Secondary Phone</string>
+    <string name="service_picture">Service Picture</string>
+    <string name="loading_service_details">Loading service details</string>
+    <string name="select_service_type">Select Service Type</string>
 </resources>
