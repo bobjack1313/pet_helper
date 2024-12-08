@@ -14,7 +14,7 @@ object Graph {
             petDao = db.petDao(),
             recordDao = db.recordDao(),
             vaccinationDao = db.vaccinationDao(),
-            vendorDao = db.vendorDao()
+            serviceDao = db.serviceDao()
         )
     }
 
