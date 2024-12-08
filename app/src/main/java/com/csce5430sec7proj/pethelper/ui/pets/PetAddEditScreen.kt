@@ -54,6 +54,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import coil.compose.rememberAsyncImagePainter
+import com.csce5430sec7proj.pethelper.ui.components.DatePickerField
+import com.csce5430sec7proj.pethelper.ui.components.EnumDropDownMenu
 import com.csce5430sec7proj.pethelper.utils.saveImageToStorage
 
 
@@ -208,17 +210,9 @@ fun PetAddEditScreen(
                             modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
                         )
 
-                        // Pet Type Dropdown
-//                EnumDropDownMenu(
-//                    selectedValue = selectedPetState.value.type,
-//                    label = "Pet Type",
-//                    options = PetType.entries.toTypedArray(),
-//                    onSelectionChange = {
-//                        selectedPetState.value = selectedPetState.value.copy(type = it)
-//                    }
-//                )
+                        Text( text = stringResource(id = R.string.type_hint))
                         EnumDropDownMenu(
-                            selectedValue = selectedPetState.value.type, // Get the current type from the selected pet state
+                            selectedValue = selectedPetState.value.type,
                             label = stringResource(id = R.string.type_hint),
                             options = PetType.entries.toTypedArray(),
                             onSelectionChange = { selectedType ->
@@ -226,7 +220,7 @@ fun PetAddEditScreen(
                                 selectedPetState.value = selectedPetState.value.copy(type = selectedType)
                             }
                         )
-
+                        Spacer(modifier = Modifier.height(16.dp))
                         // Breed Field
                         TextField(
                             value = selectedPetState.value.breed ?: "",
@@ -236,16 +230,6 @@ fun PetAddEditScreen(
                             label = { Text(stringResource(id = R.string.breed_hint)) },
                             modifier = Modifier.fillMaxWidth()
                         )
-
-                        // Breed Field
-//        selectedPetState.value.breed?.let {
-//            TextField(
-//                value = it,
-//                onValueChange = { selectedPetState.value = selectedPetState.value.copy(breed = it) },
-//                label = { Text("Breed") },
-//                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
-//            )
-//        }
 
                         // Color Field
                         selectedPetState.value.color?.let {
@@ -260,6 +244,7 @@ fun PetAddEditScreen(
                         }
 
                         // Pet Gender Dropdown
+                        Text( text = stringResource(id = R.string.gender_hint))
                         EnumDropDownMenu(
                             selectedValue = selectedPetState.value.gender ?: PetGender.OTHER,
                             label = stringResource(id = R.string.gender_hint),
@@ -268,19 +253,14 @@ fun PetAddEditScreen(
                                 selectedPetState.value = selectedPetState.value.copy(gender = it)
                             }
                         )
-
+                        Spacer(modifier = Modifier.height(16.dp))
                         // Date of Birth Field
-                        TextField(
-                            value = selectedPetState.value.dateOfBirth?.let {
-                                SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(it)
-                            } ?: "", // Provide an empty string if dateOfBirth is null
-                            onValueChange = { /* No-op, since we're using a DatePicker */ },
-                            label = { Text(stringResource(id = R.string.date_of_birth_hint)) },
-                            readOnly = true,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp)
-                                .clickable { showDatePicker() }
+                        DatePickerField(
+                            selectedDate = selectedPetState.value.dateOfBirth,
+                            onDateSelected = { selectedDate ->
+                                selectedPetState.value = selectedPetState.value.copy(dateOfBirth = selectedDate)
+                            },
+                            modifier = Modifier.padding(vertical = 8.dp)
                         )
 
                         // Weight Field with kg/lbs toggle

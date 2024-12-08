@@ -13,7 +13,11 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.update
 import com.csce5430sec7proj.pethelper.Graph
+import com.csce5430sec7proj.pethelper.data.entities.Pet
+import com.csce5430sec7proj.pethelper.data.entities.Service
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.stateIn
 
 
 // 定义用于管理 UI 状态的数据类
@@ -29,6 +33,18 @@ class RecordsViewModel(
     private val _state: MutableStateFlow<RecordsState> = MutableStateFlow(RecordsState())
     val state: StateFlow<RecordsState> get() = _state
 
+    // Expose active pets and services as flows for the UI
+    val activePets: StateFlow<List<Pet>> = repository.getPets.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Lazily,
+        initialValue = emptyList()
+    )
+
+    val availableServices: StateFlow<List<Service>> = repository.getServices.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Lazily,
+        initialValue = emptyList()
+    )
     var selectedTabIndex: MutableState<Int> = mutableStateOf(0)
         private set
 

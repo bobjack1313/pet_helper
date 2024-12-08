@@ -1,4 +1,4 @@
-package com.csce5430sec7proj.pethelper.ui.pets
+package com.csce5430sec7proj.pethelper.ui.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box

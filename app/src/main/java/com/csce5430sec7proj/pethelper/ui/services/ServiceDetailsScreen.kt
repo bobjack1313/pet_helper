@@ -102,12 +102,19 @@ fun ServiceDetailsScreen(
                     color = Color.Black,
                     modifier = Modifier.padding(top = 16.dp)
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            // Align remaining content to the left
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.Start
+            ) {
+                service?.let {
                 // Service Description
                 Text( text = stringResource(id = R.string.description_hint) )
                 Text(
                     text = service.description ?: "",
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 32.sp),
+                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 22.sp),
                     color = Color.Black,
                     modifier = Modifier.padding(top = 16.dp)
                 )
@@ -116,7 +123,7 @@ fun ServiceDetailsScreen(
                 Text( text = stringResource(id = R.string.address_hint) )
                 Text(
                     text = service.address ?: "",
-                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 32.sp),
+                    style = MaterialTheme.typography.headlineLarge.copy(fontSize = 22.sp),
                     color = Color.Black,
                     modifier = Modifier.padding(top = 16.dp)
                 )
@@ -180,6 +187,7 @@ fun ServiceDetailsScreen(
                 ) {
                     Text(text = stringResource(id = R.string.delete))
                 }
+            }
             }
         }
     }

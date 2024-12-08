@@ -21,7 +21,9 @@ class PetHelperRepository(
     private val serviceDao: ServiceDao
 ) {
     // Pets
+    // Get ALL pets Arch and unarch
     val getAllPets = petDao.getAll()
+    // This is slightly confusing, but it only returns unarched pets
     val getPets = petDao.getAllPets()
     fun getPet(id: Int) = petDao.getPet(id)
 

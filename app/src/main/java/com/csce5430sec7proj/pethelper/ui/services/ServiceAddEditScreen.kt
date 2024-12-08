@@ -1,6 +1,6 @@
 package com.csce5430sec7proj.pethelper.ui.services
 
-import com.csce5430sec7proj.pethelper.ui.pets.EnumDropDownMenu
+import com.csce5430sec7proj.pethelper.ui.components.EnumDropDownMenu
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
