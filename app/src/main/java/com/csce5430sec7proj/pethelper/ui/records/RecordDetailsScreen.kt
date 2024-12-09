@@ -6,6 +6,7 @@ import android.app.DatePickerDialog
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,52 +21,53 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import com.csce5430sec7proj.pethelper.R
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.csce5430sec7proj.pethelper.data.entities.Pet
+import com.csce5430sec7proj.pethelper.ui.pets.PetsViewModel
+
 
 @Composable
 fun RecordDetailScreen(
-    navController: NavController,
-    recordId: Int,
-    recordType: RecordType,
-    recordsViewModel: RecordsViewModel,
-    onNavigate: (String) -> Unit = {}
+    modifier: Modifier = Modifier,
+    onNavigate: (Int) -> Unit,
+    recordId: Int?,
+    onNavigateBack: () -> Boolean,
 ) {
+    val recordViewModel: RecordsViewModel = viewModel()
     val descriptionState = remember { mutableStateOf("") }
     val dateState = remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+    val recordState = recordViewModel.state.collectAsState().value
+    val record: Record? = recordState.records.find { it.id == recordId }
 
     // 日期格式化工具
     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val calendar = Calendar.getInstance()
 
+    // State variables to handle confirmations
+    var showDeleteConfirmation by remember { mutableStateOf(false) }
+
     // 使用 LaunchedEffect 加载单个记录
-    LaunchedEffect(recordId) {
-        val record = recordsViewModel.getRecordById(recordId)
-        if (record != null) {
-            descriptionState.value = record.description ?: ""
-            dateState.value = record.date?.let { dateFormat.format(it) } ?: ""
-        }
-    }
+//    LaunchedEffect(recordId) {
+//        val record = recordViewModel.getRecordById(recordId)
+//        if (record != null) {
+//            descriptionState.value = record.description ?: ""
+//            dateState.value = record.date?.let { dateFormat.format(it) } ?: ""
+//        }
+//    }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource( id = R.string.record_details_title,
-                            recordType.name.replace("_", " "))) },
-                actions = {
-                    IconButton(onClick = {
-                        coroutineScope.launch {
-                            recordsViewModel.deleteRecord(Record(id = recordId, petIdFk = 0,
-                                type = recordType, description = descriptionState.value,
-                                date = null, serviceIdFk = 0, cost = 0.0))
-                            navController.popBackStack()
-                        }
-                    }) {
-                        Icon(Icons.Default.Delete, contentDescription = stringResource(
-                            id = R.string.delete_record))
-                    }
-                }
-            )
+        modifier = modifier.fillMaxSize(),
+        floatingActionButton = {
+            FloatingActionButton(onClick = {
+                record?.let { onNavigate(it.id) }
+            }) {
+                Icon(imageVector = Icons.Default.Edit, contentDescription = stringResource(id = R.string.Edit))
+            }
         }
     ) { padding ->
         Column(
@@ -107,34 +109,61 @@ fun RecordDetailScreen(
                 )
             )
 
-            // 保存按钮
+            // Deleting a record
             Button(
                 onClick = {
-                    if (descriptionState.value.isNotBlank()) {
-                        coroutineScope.launch {
-                            val parsedDate = try {
-                                dateFormat.parse(dateState.value)
-                            } catch (e: Exception) {
-                                null
-                            }
-                            val updatedRecord = Record(
-                                id = recordId,
-                                petIdFk = 0,
-                                type = recordType,
-                                description = descriptionState.value,
-                                date = parsedDate,
-                                serviceIdFk = 0,
-                                cost = 0.0
-                            )
-                            recordsViewModel.updateRecord(updatedRecord)
-                            navController.popBackStack()
-                        }
+                    record?.let {
+                        // Show the confirmation dialog
+                        showDeleteConfirmation = true
                     }
                 },
-                modifier = Modifier.align(Alignment.End)
+                modifier = Modifier.weight(1f).padding(start = 8.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
             ) {
-                Text(stringResource(id = R.string.save))
+                Text(text = stringResource(id = R.string.delete))
             }
+        }
+
+        // Delete Confirmation Dialog
+        if (showDeleteConfirmation) {
+            AlertDialog(
+                onDismissRequest = {
+                    // Dismiss the dialog without taking action
+                    showDeleteConfirmation = false
+                },
+                title = {
+                    Text(text = stringResource(id = R.string.confirm_delete_title))
+                },
+                text = {
+                    Text(text = stringResource(id = R.string.confirm_delete_message_pet))
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            record?.let {
+                                // Perform the delete action
+                                recordViewModel.deleteRecord(it)
+                                onNavigateBack()
+                            }
+                            // Dismiss the dialog
+                            showDeleteConfirmation = false
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                    ) {
+                        Text(text = stringResource(id = R.string.delete))
+                    }
+                },
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            // Dismiss the dialog without deleting
+                            showDeleteConfirmation = false
+                        }
+                    ) {
+                        Text(text = stringResource(id = R.string.cancel))
+                    }
+                }
+            )
         }
     }
 }

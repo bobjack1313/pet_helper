@@ -32,6 +32,8 @@ class RecordsViewModel(
     // 使用 StateFlow 管理 UI 状态
     private val _state: MutableStateFlow<RecordsState> = MutableStateFlow(RecordsState())
     val state: StateFlow<RecordsState> get() = _state
+    private val _selectedSortOption = MutableStateFlow("Type")
+    val selectedSortOption: StateFlow<String> get() = _selectedSortOption
 
     // Expose active pets and services as flows for the UI
     val activePets: StateFlow<List<Pet>> = repository.getPets.stateIn(
@@ -62,18 +64,18 @@ class RecordsViewModel(
     }
 
     // 根据 selectedTabIndex 返回当前选中的记录类型
-    fun getFilteredRecords(): List<Record> {
-        return when (selectedTabIndex.value) {
-            0 -> _state.value.records.filter { it.type == RecordType.MEDICAL }
-            1 -> _state.value.records.filter { it.type == RecordType.GROOMING }
-            2 -> _state.value.records.filter { it.type == RecordType.VACCINATION }
-            3 -> _state.value.records.filter { it.type == RecordType.TRAINING }
-            4 -> _state.value.records.filter { it.type == RecordType.DIET }
-            else -> _state.value.records
-        }
-    }
+//    fun getFilteredRecords(): List<Record> {
+//        return when (selectedTabIndex.value) {
+//            0 -> _state.value.records.filter { it.type == RecordType.MEDICAL }
+//            1 -> _state.value.records.filter { it.type == RecordType.GROOMING }
+//            2 -> _state.value.records.filter { it.type == RecordType.VACCINATION }
+//            3 -> _state.value.records.filter { it.type == RecordType.TRAINING }
+//            4 -> _state.value.records.filter { it.type == RecordType.DIET }
+//            else -> _state.value.records
+//        }
+//    }
 
-//    // 显示添加对话框
+    // 显示添加对话框
 //    fun showAddDialog() {
 //        _state.update { it.copy(isAddDialogVisible = true) }
 //    }
@@ -113,5 +115,30 @@ class RecordsViewModel(
     }
     suspend fun getRecordById(id: Int): Record? {
         return repository.getRecord(id).firstOrNull()
+    }
+
+
+    fun setSortOption(option: String) {
+        _selectedSortOption.value = option
+    }
+
+    fun getFilteredRecords(): List<Record> {
+        val sortOption = _selectedSortOption.value
+        return when (sortOption) {
+            "Type" -> _state.value.records.sortedBy { it.type.name }
+            "Vendor" -> _state.value.records.sortedBy { it.serviceIdFk }
+            "Pet" -> _state.value.records.sortedBy { it.petIdFk }
+            else -> _state.value.records
+        }
+    }
+
+    fun getSortComparator(descending: Boolean): Comparator<Record> {
+        val comparator = when (_selectedSortOption.value) {
+            "Type" -> compareBy<Record> { it.type.name }
+            "Vendor" -> compareBy { it.serviceIdFk }
+            "Pet" -> compareBy { it.petIdFk }
+            else -> compareBy { it.date }
+        }
+        return if (descending) comparator.reversed() else comparator
     }
 }

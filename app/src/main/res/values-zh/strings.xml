@@ -80,4 +80,23 @@
     <string name="service_picture">Service Picture</string>
     <string name="loading_service_details">Loading service details</string>
     <string name="select_service_type">Select Service Type</string>
+    <string name="confirm_delete_title">Confirm Deletion</string>
+    <string name="confirm_archive_title">Confirm Archiving</string>
+    <string name="confirm_archive_message_pet">Are you sure you want to archive this pet?</string>
+    <string name="confirm_delete_message_service">Are you sure you want to delete this service?</string>
+    <string name="confirm_delete_message_pet">Are you sure you want to delete this pet entry?</string>
+    <string name="confirm_delete_message_record">Are you sure you want to delete this record?</string>
+    <string name="sort_order_toggle">Sort</string>
+    <string name="active">Active</string>
+    <string name="archived">Archived</string>
+    <string name="microchip_issuer_hint">Microchip Issuer</string>
+    <string name="microchip_number_hint">Microchip Number</string>
+    <string name="aggression_level">Aggression Level</string>
+    <string name="edit_service">Update Service</string>
+    <string name="record_type">Record Type</string>
+    <string name="add_notification">Add Notification</string>
+    <string name="enter_notification_details">Enter the notification details: </string>
+    <string name="notification">Notification</string>
+    <string name="select_category">Select Category</string>
+    <string name="no_notifications_found">No notifications found</string>
 </resources>

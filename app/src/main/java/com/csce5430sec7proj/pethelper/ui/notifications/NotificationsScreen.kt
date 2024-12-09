@@ -1,174 +1,122 @@
 package com.csce5430sec7proj.pethelper.ui.notifications
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable // Importing clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.csce5430sec7proj.pethelper.R
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotificationsScreen(modifier: Modifier = Modifier) {
     var notifications by remember { mutableStateOf(listOf<Notification>()) }
     var showAddNotificationDialog by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(Color(0xFF1976D2)),  // Blue background
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Notifications",
-            fontSize = 40.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = Color.White
-        )
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.tab_bar_notifications),
+                        style = MaterialTheme.typography.titleLarge
+                    ) },
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        if (notifications.isEmpty()) {
-            // Placeholder for "No notifications found"
-            Text(
-                text = "No notifications found",
-                fontSize = 20.sp,
-                color = Color.White.copy(alpha = 0.7f)  // Light text color
+                colors = TopAppBarDefaults.topAppBarColors(
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    containerColor = MaterialTheme.colorScheme.surface,
+                ),
+                actions = {}
             )
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .padding(16.dp)
-            ) {
-                items(notifications) { notification ->
-                    NotificationItem(notification)
+        },
+        floatingActionButton = {
+            if (notifications.isEmpty()) {
+                FloatingActionButton(onClick = { showAddNotificationDialog = true },
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = stringResource(id = R.string.add_notification),
+                    )
                 }
             }
         }
+    ) { padding ->
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Add Notification button
-        Button(
-            onClick = { showAddNotificationDialog = true },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp)
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(padding)
+                .background(MaterialTheme.colorScheme.background),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Add Notification", fontSize = 16.sp)
-        }
-    }
-
-    // Dialog for adding a new notification
-    if (showAddNotificationDialog) {
-        AddNotificationDialog(
-            onDismiss = { showAddNotificationDialog = false },
-            onConfirm = { newNotification ->
-                notifications = notifications + newNotification
-                showAddNotificationDialog = false
-            }
-        )
-    }
-}
-
-@Composable
-fun NotificationItem(notification: Notification) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = notification.categoryColor)  // Use category color
-    ) {
-        Text(
-            text = notification.details,
-            modifier = Modifier.padding(16.dp),
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Medium
-        )
-    }
-}
-
-@Composable
-fun AddNotificationDialog(onDismiss: () -> Unit, onConfirm: (Notification) -> Unit) {
-    var notificationText by remember { mutableStateOf("") }
-    var selectedCategory by remember { mutableStateOf("Vaccination Reminders") } // Default category
-
-    val categories = listOf(
-        NotificationCategory("Vaccination Reminders", Color.Red),
-        NotificationCategory("Medication Reminders", Color.Blue),
-        NotificationCategory("Vet Appointments", Color.Green),
-        NotificationCategory("General Health Checkups", Color.Yellow)
-    )
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            Text(text = "Add Notification", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-        },
-        text = {
-            Column {
-                Text("Enter the notification details:")
-                Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(
-                    value = notificationText,
-                    onValueChange = { notificationText = it },
-                    label = { Text("Notification") },
-                    modifier = Modifier.fillMaxWidth()
+            if (notifications.isEmpty()) {
+                // Placeholder for "No notifications found"
+                Text(
+                    text = stringResource(id = R.string.no_notifications_found),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
-                Spacer(modifier = Modifier.height(8.dp))
-                // Dropdown to select category
-                Text("Select Category:")
-                categories.forEach { category ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(4.dp)
-                            .clickable { selectedCategory = category.name } // Use clickable here
-                            .background(if (selectedCategory == category.name) Color.Gray else Color.Transparent),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = category.name,
-                            color = Color.White,
-                            fontWeight = if (selectedCategory == category.name) FontWeight.Bold else FontWeight.Normal
-                        )
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .padding(horizontal = 16.dp)
+                ) {
+                    items(notifications) { notification ->
+                        NotificationItem(notification)
                     }
                 }
             }
-        },
-        confirmButton = {
-            Button(onClick = {
-                if (notificationText.isNotBlank()) {
-                    val categoryColor = categories.first { it.name == selectedCategory }.color
-                    onConfirm(Notification(notificationText, selectedCategory, categoryColor))
-                }
-            }) {
-                Text("Add")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancel")
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Add Notification button
+            Button(
+                onClick = { showAddNotificationDialog = true },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ),
+            ) {
+                Text(
+                    text = stringResource(id = R.string.add_notification),
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
         }
-    )
+
+        // Dialog for adding a new notification
+        if (showAddNotificationDialog) {
+            AddNotificationDialog(
+                onDismiss = { showAddNotificationDialog = false },
+                onConfirm = { newNotification ->
+                    notifications = notifications + newNotification
+                    showAddNotificationDialog = false
+                }
+            )
+        }
+    }
 }
+
 
 // Notification Data Class
 data class Notification(
     val details: String,
     val category: String,
-    val categoryColor: Color // Store color for the category
+    val categoryColor: Color
 )
 
 // Category Data Class

@@ -18,15 +18,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import coil.compose.rememberAsyncImagePainter
 import com.csce5430sec7proj.pethelper.R
 import com.csce5430sec7proj.pethelper.data.entities.ServiceCategory
+import com.csce5430sec7proj.pethelper.ui.components.PetTypeImage
+import com.csce5430sec7proj.pethelper.ui.pets.PetRow
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServicesScreen(
     modifier: Modifier = Modifier,
@@ -36,45 +41,76 @@ fun ServicesScreen(
     val viewModel: ServicesViewModel = viewModel()
     val servicesState by viewModel.state.collectAsState()
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(Color(0xFF1976D2)),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        if (servicesState.services.isEmpty()) {
-            Column(
-                modifier = modifier
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Button(onClick = { onNavigate(-1) }) {
-                    Text(text = stringResource(id = R.string.add_service))
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.tab_bar_services),
+                        style = MaterialTheme.typography.titleLarge
+                    ) },
+
+                colors = TopAppBarDefaults.topAppBarColors(
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    containerColor = MaterialTheme.colorScheme.surface,
+                ),
+                actions = {}
+            )
+        },
+        floatingActionButton = {
+            if (servicesState.services.isNotEmpty()) {
+                FloatingActionButton(onClick = { onNavigate(-1) },
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = stringResource(id = R.string.add_service),
+                    )
                 }
             }
-        } else {
-            Scaffold(
-                modifier = modifier,
-                floatingActionButton = {
-                    FloatingActionButton(onClick = { onNavigate(-1) }) {
-                        Icon(imageVector = Icons.Default.Add,
-                            contentDescription = stringResource(id = R.string.add_service))
+        }
+    ) { padding ->
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background),
+        ) {
+            if (servicesState.services.isEmpty()) {
+                Column(
+                    modifier = modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Button(
+                        onClick = { onNavigate(-1) },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        )
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.add_service),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
                     }
                 }
-            ) { paddingValues ->
+            } else {
                 LazyColumn(
                     modifier = Modifier
-                        .padding(paddingValues)
-                        .padding(16.dp)
+                        .padding(padding)
+                        .padding(0.dp)
                 ) {
                     items(servicesState.services) { service ->
                         ServiceRow(
-                            serviceName = service.name, onClick = {
-                                onNavigateDetail(service.id)
-                            },
+                            serviceName = service.name,
+                            onClick = { onNavigateDetail(service.id) },
                             serviceCategory = service.category
+                        )
+                        HorizontalDivider(
+                            color = MaterialTheme.colorScheme.secondary,
+                            thickness = 1.dp,
+                            modifier = Modifier.padding(horizontal = 0.dp)
                         )
                     }
                 }
@@ -88,7 +124,8 @@ fun ServicesScreen(
 fun ServiceRow(
     serviceName: String,
     serviceCategory: ServiceCategory?,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    backgroundColor: Color = MaterialTheme.colorScheme.primaryContainer
 ) {
     val iconResId = when (serviceCategory) {
         ServiceCategory.GROOMER -> R.drawable.ic_bird
@@ -104,8 +141,9 @@ fun ServiceRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(120.dp)
-            .padding(8.dp)
+            .background(backgroundColor)
+            .padding(horizontal = 16.dp)
+            .height(110.dp)
             .clickable(onClick = onClick),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
@@ -113,10 +151,9 @@ fun ServiceRow(
         // Display the service's icon
         Box(
             modifier = Modifier
-                .size(100.dp)
+                .size(80.dp)
                 .clip(CircleShape)
-                // Optional: Background color for the icon
-                .background(Color.Gray)
+                .background(MaterialTheme.colorScheme.secondaryContainer)
         ) {
             Image(
                 painter = painterResource(id = iconResId),
@@ -130,8 +167,8 @@ fun ServiceRow(
         // Service name text
         Text(
             text = serviceName,
-            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 35.sp),
-            color = Color.Black
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }

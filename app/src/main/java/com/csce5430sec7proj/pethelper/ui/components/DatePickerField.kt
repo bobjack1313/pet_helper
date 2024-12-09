@@ -1,6 +1,5 @@
 package com.csce5430sec7proj.pethelper.ui.components
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,12 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.stringResource
-import com.csce5430sec7proj.pethelper.R
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -61,13 +59,19 @@ fun DatePickerField(
         OutlinedTextField(
             value = dateText,
             onValueChange = { newText ->
-                dateText = newText // Update the displayed text
+                dateText = newText
             },
-            label = { Text("Date of Birth") },
+            label = {
+                Text(
+                    "Date of Birth",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            },
             trailingIcon = {
                 IconButton(
                     onClick = {
-                        focusManager.clearFocus() // Clear focus from the text field
+                        focusManager.clearFocus()
                         val manualDate = parseDateWithMultipleFormats(dateText)
                         if (manualDate != null && isYearInValidRange(manualDate)) {
                             datePickerState.selectedDateMillis = manualDate.time
@@ -75,18 +79,25 @@ fun DatePickerField(
                             // Default to current date if no date is selected
                             datePickerState.selectedDateMillis = System.currentTimeMillis()
                         }
-                        showDatePicker = true // Open the calendar
+                        showDatePicker = true
                     }
                 ) {
                     Icon(
                         imageVector = Icons.Default.DateRange,
-                        contentDescription = "Select date"
+                        contentDescription = "Select date",
+                        tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
             },
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                unfocusedTextColor = MaterialTheme.colorScheme.onBackground
+            ),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(64.dp)
+                .height(72.dp)
         )
 
         // Show the DatePicker Popup if showDatePicker is true
@@ -114,8 +125,8 @@ fun DatePickerField(
                         datePickerState.selectedDateMillis?.let { millis ->
                             val selectedDate = Date(millis)
                             if (isYearInValidRange(selectedDate)) {
-                                onDateSelected(selectedDate) // Callback for the selected date
-                                dateText = convertMillisToDate(millis) // Update the displayed date
+                                onDateSelected(selectedDate)
+                                dateText = convertMillisToDate(millis)
                             }
                         }
                     }
@@ -123,6 +134,7 @@ fun DatePickerField(
             }
         }
     }
+
 }
 
 // Utility function to convert milliseconds to a formatted date string
@@ -134,11 +146,11 @@ fun convertMillisToDate(millis: Long): String {
 // Utility function to parse a date string with multiple formats
 fun parseDateWithMultipleFormats(dateString: String): Date? {
     val formats = listOf(
-        "MM/dd/yyyy",  // Full year format (e.g., 10/21/2024)
-        "MM/dd/yy",    // Two-digit year format (e.g., 10/21/24)
-        "yyyy-MM-dd",  // ISO-like format (e.g., 2024-10-21)
-        "MMM dd, yyyy", // Long month format (e.g., Oct 21, 2024)
-        "dd/MM/yyyy"   // Day-first format (e.g., 21/10/2024)
+        "MM/dd/yyyy",
+        "MM/dd/yy",
+        "yyyy-MM-dd",
+        "MMM dd, yyyy",
+        "dd/MM/yyyy"
     )
 
     for (format in formats) {
@@ -159,7 +171,7 @@ fun parseDateWithMultipleFormats(dateString: String): Date? {
             // Ignore and try the next format
         }
     }
-    return null // Return null if no formats match
+    return null
 }
 
 // Utility function to validate the year range

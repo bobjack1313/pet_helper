@@ -9,7 +9,6 @@ import com.csce5430sec7proj.pethelper.data.PetHelperRepository
 import com.csce5430sec7proj.pethelper.data.entities.Pet
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import androidx.compose.runtime.State
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.util.Calendar
@@ -89,14 +88,6 @@ class PetsViewModel(
             repository.getArchivedPets().collectLatest { archivedPetsList ->
                 _state.value = state.value.copy(pets = archivedPetsList)
             }
-        }
-    }
-
-    fun onPetCheckedChange(pet: Pet, isChecked: Boolean) {
-        viewModelScope.launch {
-            repository.updatePet(
-                pet = pet.copy()
-            )
         }
     }
 
