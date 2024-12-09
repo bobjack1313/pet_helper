@@ -99,4 +99,8 @@
     <string name="notification">Notification</string>
     <string name="select_category">Select Category</string>
     <string name="no_notifications_found">No notifications found</string>
+    <string name="call_service">Call Service</string>
+    <string name="email_service">Email Service</string>
+    <string name="service_not_found">Service not found</string>
+    <string name="contact_service">Contact Service</string>
 </resources>

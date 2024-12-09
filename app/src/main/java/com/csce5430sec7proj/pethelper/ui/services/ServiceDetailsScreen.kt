@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -47,9 +48,10 @@ import com.csce5430sec7proj.pethelper.ui.components.LabelWithText
 @Composable
 fun ServiceDetailsScreen(
     modifier: Modifier = Modifier,
-    onNavigate: (Int) -> Unit,
     serviceId: Int?,
-    onNavigateBack: () -> Boolean,
+    onNavigateEdit: (Int) -> Unit,
+    onNavigateContact: (Int) -> Unit,
+    onNavigateBack: () -> Unit,
 ) {
     val viewModel: ServicesViewModel = viewModel()
     val serviceState = viewModel.state.collectAsState().value
@@ -61,7 +63,7 @@ fun ServiceDetailsScreen(
         modifier = modifier.fillMaxSize(),
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { service?.let { onNavigate(it.id) } },
+                onClick = { service?.let { onNavigateEdit(it.id) } },
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                 contentColor = MaterialTheme.colorScheme.onSecondaryContainer
             ) {
@@ -171,7 +173,26 @@ fun ServiceDetailsScreen(
                     )
                 }
             }
-
+            // Contact Service Button
+            Button(
+                onClick = {
+                    service?.let {
+                        onNavigateContact(it.id)
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary
+                ),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Phone,
+                    contentDescription = stringResource(id = R.string.contact_service),
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+                Text(text = stringResource(id = R.string.contact_service))
+            }
             Spacer(modifier = Modifier.height(25.dp))
 
             // Action Buttons
