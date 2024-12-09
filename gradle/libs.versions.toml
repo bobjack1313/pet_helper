@@ -1,5 +1,5 @@
 [versions]
-agp = "8.7.2"
+agp = "8.7.3"
 kotlin = "2.0.21"
 ksp = "2.0.21-1.0.25"
 coreKtx = "1.15.0"
@@ -8,12 +8,19 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleKtx = "2.8.7"
 activityCompose = "1.9.3"
-composeBom = "2024.10.01"
+composeBom = "2024.11.00"
 appcompat = "1.7.0"
 androidMaterial = "1.12.0"
-androidNavigation = "2.8.3"
+androidNavigation = "2.8.4"
 constraintLayout = "2.2.0"
 roomVersion = "2.6.1"
+mockitoCore = "5.14.2"
+truthVersion = "1.4.4"
+kotlinCoroutinesTestVersion = "1.9.0"
+testCoreVersion = "1.6.1" # Updated version is not stable with our app
+uiManifestVersion = "1.7.5"
+uiTestJunitVersion = "1.7.5"
+coil = "2.4.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -26,8 +33,16 @@ androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = 
 
 #Test
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-test = { group = "androidx.test", name = "core", version.ref = "testCoreVersion" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-room-testing = { group = "androidx.room", name = "room-testing", version.ref = "roomVersion" }
+mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockitoCore" }
+truth = { group = "com.google.truth", name = "truth", version.ref = "truthVersion" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinCoroutinesTestVersion" }
+androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "testCoreVersion" }
+androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "uiManifestVersion" }
+androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "uiTestJunitVersion" }
 
 #JetpackCompose
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -36,8 +51,6 @@ androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
-androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintLayout" }
@@ -46,9 +59,11 @@ androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifec
 androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "androidNavigation" }
 androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "androidNavigation" }
 com-google-android-material = { group = "com.google.android.material", name = "material", version.ref = "androidMaterial" }
+coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
 #Navigation
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidNavigation" }
+core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "testCoreVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

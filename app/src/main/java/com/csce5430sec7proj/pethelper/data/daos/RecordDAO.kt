@@ -9,7 +9,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.csce5430sec7proj.pethelper.data.entities.Pet
 import com.csce5430sec7proj.pethelper.data.entities.Record
-import com.csce5430sec7proj.pethelper.data.entities.Vendor
+import com.csce5430sec7proj.pethelper.data.entities.Service
 import kotlinx.coroutines.flow.Flow
 
 
@@ -33,46 +33,38 @@ interface RecordDao {
 
     @Query("""
         SELECT * FROM records AS R INNER JOIN pets AS P
-        ON R.pet_id_fk = P.pet_id INNER JOIN vendors AS V
-        ON R.vendor_id_fk = V.vendor_id
+        ON R.pet_id_fk = P.pet_id INNER JOIN services AS V
+        ON R.service_id_fk = V.service_id
     """)
-    fun getRecordsWithPetAndVendor(): Flow<List<RecordsWithPetAndVendor>>
+    fun getRecordsWithPetAndService(): Flow<List<RecordsWithPetAndService>>
 
     @Query("""
         SELECT * FROM records AS R INNER JOIN pets AS P
-        ON R.pet_id_fk = P.pet_id INNER JOIN vendors AS V
-        ON R.vendor_id_fk = V.vendor_id WHERE R.pet_id_fk =:petId
+        ON R.pet_id_fk = P.pet_id INNER JOIN services AS V
+        ON R.service_id_fk = V.service_id WHERE R.pet_id_fk =:petId
     """)
-    fun getRecordsWithPetAndVendorFilteredByPetId(petId: Int):
-            Flow<List<RecordsWithPetAndVendor>>
+    fun getRecordsWithPetAndServiceFilteredByPetId(petId: Int):
+            Flow<List<RecordsWithPetAndService>>
 
     @Query("""
         SELECT * FROM records AS R INNER JOIN pets AS P
-        ON R.pet_id_fk = P.pet_id INNER JOIN vendors AS V
-        ON R.vendor_id_fk = V.vendor_id WHERE R.vendor_id_fk =:vendorId
+        ON R.pet_id_fk = P.pet_id INNER JOIN services AS V
+        ON R.service_id_fk = V.service_id WHERE R.service_id_fk =:serviceId
     """)
-    fun getRecordsWithPetAndVendorFilteredByVendorId(vendorId: Int):
-            Flow<List<RecordsWithPetAndVendor>>
+    fun getRecordsWithPetAndServiceFilteredByServiceId(serviceId: Int):
+            Flow<List<RecordsWithPetAndService>>
 
     @Query("""
         SELECT * FROM records AS R INNER JOIN pets AS P
-        ON R.pet_id_fk = P.pet_id INNER JOIN vendors AS V
-        ON R.vendor_id_fk = V.vendor_id WHERE R.record_id =:recordId
+        ON R.pet_id_fk = P.pet_id INNER JOIN services AS V
+        ON R.service_id_fk = V.service_id WHERE R.record_id =:recordId
     """)
-    fun getRecordWithPetAndVendorFilteredById(recordId: Int):
-            Flow<RecordsWithPetAndVendor>
-
- 
-
-
+    fun getRecordWithPetAndServiceFilteredById(recordId: Int):
+            Flow<RecordsWithPetAndService>
 }
-/*
-Relationships:
-• many-to-1 with Pet
-*/
 
-data class RecordsWithPetAndVendor(
+data class RecordsWithPetAndService(
     @Embedded val record: Record,
     @Embedded val pet: Pet,
-    @Embedded val vendor: Vendor
+    @Embedded val service: Service
 )

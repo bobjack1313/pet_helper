@@ -9,7 +9,6 @@ import com.csce5430sec7proj.pethelper.data.PetHelperRepository
 import com.csce5430sec7proj.pethelper.data.entities.Pet
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import androidx.compose.runtime.State
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.util.Calendar
@@ -24,6 +23,8 @@ class PetsViewModel(
     val state: StateFlow<PetsState> get() = _state
     var selectedPet: MutableState<Pet?> = mutableStateOf(null)
         private set
+    private val _isShowingArchived = MutableStateFlow(false)
+    val isShowingArchived: StateFlow<Boolean> get() = _isShowingArchived
 
     init {
         getPets()
@@ -31,11 +32,28 @@ class PetsViewModel(
 
     private fun getPets() {
         viewModelScope.launch {
-            repository.getPets.collectLatest { petsList ->
-                _state.value = state.value.copy(pets = petsList)
+            _isShowingArchived.collectLatest { showArchived ->
+                if (showArchived) {
+                    repository.getArchivedPets().collectLatest { petsList ->
+                        _state.value = state.value.copy(pets = petsList)
+                    }
+                } else {
+                    repository.getPets.collectLatest { petsList ->
+                        _state.value = state.value.copy(pets = petsList)
+                    }
+                }
             }
         }
     }
+
+    fun getAllPets() {
+                viewModelScope.launch {
+                    repository.getAllPets.collectLatest { petsList ->
+                        _state.value = state.value.copy(pets = petsList)
+                    }
+                }
+            }
+
 
     // Updated getPet function to set the selected pet
     fun getPet(id: Int) {
@@ -64,11 +82,12 @@ class PetsViewModel(
         }
     }
 
-    fun onPetCheckedChange(pet: Pet, isChecked: Boolean) {
+
+    fun getArchivedPets() {
         viewModelScope.launch {
-            repository.updatePet(
-                pet = pet.copy()
-            )
+            repository.getArchivedPets().collectLatest { archivedPetsList ->
+                _state.value = state.value.copy(pets = archivedPetsList)
+            }
         }
     }
 
@@ -108,6 +127,10 @@ class PetsViewModel(
         } else {
             return pet to null
         }
+    }
+
+    fun toggleShowArchived() {
+        _isShowingArchived.value = !_isShowingArchived.value
     }
 }
 

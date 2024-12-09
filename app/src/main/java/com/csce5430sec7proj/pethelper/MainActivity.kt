@@ -25,9 +25,9 @@ class MainActivity : ComponentActivity() {
         Graph.provide(this)
 
         setContent {
-            PetHelperTheme {
+            PetHelperTheme(dynamicColor = false) {
                 // Pass the recordDao from the database to MainNavScreen
-                MainNavScreen(recordDao = db.recordDao())
+                MainNavScreen()
             }
         }
     }

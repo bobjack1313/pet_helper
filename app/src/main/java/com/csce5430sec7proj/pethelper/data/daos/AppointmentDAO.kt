@@ -10,7 +10,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.csce5430sec7proj.pethelper.data.entities.Pet
-import com.csce5430sec7proj.pethelper.data.entities.Vendor
+import com.csce5430sec7proj.pethelper.data.entities.Service
 import kotlinx.coroutines.flow.Flow
 
 
@@ -34,44 +34,38 @@ interface AppointmentDao {
 
     @Query("""
         SELECT * FROM appointments AS A INNER JOIN pets AS P
-        ON A.pet_id_fk = P.pet_id INNER JOIN vendors AS V
-        ON A.vendor_id_fk = V.vendor_id
+        ON A.pet_id_fk = P.pet_id INNER JOIN services AS V
+        ON A.service_id_fk = V.service_id
     """)
-    fun getAppointmentsWithPetAndVendor(): Flow<List<AppointmentsWithPetAndVendor>>
+    fun getAppointmentsWithPetAndService(): Flow<List<AppointmentsWithPetAndService>>
 
     @Query("""
         SELECT * FROM appointments AS A INNER JOIN pets AS P
-        ON A.pet_id_fk = P.pet_id INNER JOIN vendors AS V
-        ON A.vendor_id_fk = V.vendor_id WHERE A.pet_id_fk =:petId
+        ON A.pet_id_fk = P.pet_id INNER JOIN services AS V
+        ON A.service_id_fk = V.service_id WHERE A.pet_id_fk =:petId
     """)
-    fun getAppointmentsWithPetAndVendorFilteredByPetId(petId: Int):
-            Flow<List<AppointmentsWithPetAndVendor>>
+    fun getAppointmentsWithPetAndServiceFilteredByPetId(petId: Int):
+            Flow<List<AppointmentsWithPetAndService>>
 
     @Query("""
         SELECT * FROM appointments AS A INNER JOIN pets AS P
-        ON A.pet_id_fk = P.pet_id INNER JOIN vendors AS V
-        ON A.vendor_id_fk = V.vendor_id WHERE A.vendor_id_fk =:vendorId
+        ON A.pet_id_fk = P.pet_id INNER JOIN services AS V
+        ON A.service_id_fk = V.service_id WHERE A.service_id_fk =:serviceId
     """)
-    fun getAppointmentsWithPetAndVendorFilteredByVendorId(vendorId: Int):
-            Flow<List<AppointmentsWithPetAndVendor>>
+    fun getAppointmentsWithPetAndServiceFilteredByServiceId(serviceId: Int):
+            Flow<List<AppointmentsWithPetAndService>>
 
     @Query("""
         SELECT * FROM appointments AS A INNER JOIN pets AS P
-        ON A.pet_id_fk = P.pet_id INNER JOIN vendors AS V
-        ON A.vendor_id_fk = V.vendor_id WHERE A.appointment_id =:appointmentId
+        ON A.pet_id_fk = P.pet_id INNER JOIN services AS V
+        ON A.service_id_fk = V.service_id WHERE A.appointment_id =:appointmentId
     """)
-    fun getAppointmentWithPetAndVendorFilteredById(appointmentId: Int):
-            Flow<AppointmentsWithPetAndVendor>
+    fun getAppointmentWithPetAndServiceFilteredById(appointmentId: Int):
+            Flow<AppointmentsWithPetAndService>
 }
 
-data class AppointmentsWithPetAndVendor(
+data class AppointmentsWithPetAndService(
     @Embedded val appointment: Appointment,
     @Embedded val pet: Pet,
-    @Embedded val vendor: Vendor
+    @Embedded val service: Service
 )
-
-/*
-Relationships:
-• many-to-1 with Pet
-• many-to-1 with Vendor
-*/

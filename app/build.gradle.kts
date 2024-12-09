@@ -19,22 +19,29 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        viewBinding = true
+        compose = true
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     kotlinOptions {
         jvmTarget = "17"
     }
-    buildFeatures {
-        viewBinding = true
-        compose = true
+
+    sourceSets {
+        getByName("androidTest").java.srcDirs("src/androidTest/java")
     }
 }
 
@@ -53,6 +60,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.com.google.android.material)
+    implementation(libs.coil.compose)
 
     // ViewModel, LiveData, Lifecycle
     implementation(libs.androidx.lifecycle.livedata.ktx)
@@ -62,6 +70,7 @@ dependencies {
     // Room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.core.ktx)
     ksp(libs.androidx.ksp.room)
 
     // Navigation
@@ -73,6 +82,17 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.androidx.ui.test.manifest)
     testImplementation(libs.androidx.ui.test.junit4)
+    testImplementation(libs.androidx.room.testing)
+    testImplementation(libs.androidx.test)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.truth)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.junit)
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.test)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.ui.test.manifest)
+    androidTestImplementation(libs.androidx.ui.test.junit4)
 }

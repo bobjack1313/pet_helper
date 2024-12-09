@@ -23,8 +23,8 @@ data class Record(
     val description: String?="",
     @ColumnInfo(name = "record_date")
     val date: Date?=null,
-    @ColumnInfo(name = "vendor_id_fk")
-    val vendorIdFk: Int? = 0,
+    @ColumnInfo(name = "service_id_fk")
+    val serviceIdFk: Int? = 0,
     @ColumnInfo(name = "record_cost")
     val cost: Double? = 0.0,
 )

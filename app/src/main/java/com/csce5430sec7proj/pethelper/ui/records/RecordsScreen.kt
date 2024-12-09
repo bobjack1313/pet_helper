@@ -1,8 +1,6 @@
-@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
-
 package com.csce5430sec7proj.pethelper.ui.records
 
-import android.app.DatePickerDialog
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,180 +10,123 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.compose.ui.window.Dialog
-import kotlinx.coroutines.launch
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.ui.platform.LocalContext
 import com.csce5430sec7proj.pethelper.data.entities.Record
-import com.csce5430sec7proj.pethelper.data.entities.RecordType
 import java.text.SimpleDateFormat
 import java.util.*
-import android.util.Log
 import androidx.compose.foundation.clickable
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.ui.res.stringResource
+import com.csce5430sec7proj.pethelper.R
+import com.csce5430sec7proj.pethelper.ui.components.SortDropdown
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecordsScreen(
-    navController: NavController,
-    recordsViewModel: RecordsViewModel = viewModel(),
-    onNavigate: (String) -> Unit = {}
+    modifier: Modifier = Modifier,
+    onNavigate: (Int) -> Unit,
+    onNavigateDetail: (Int) -> Unit,
 ) {
+    val recordsViewModel: RecordsViewModel = viewModel()
     val recordsState by recordsViewModel.state.collectAsState()
-    val selectedTabIndex by recordsViewModel.selectedTabIndex
-    val tabs = listOf(
-        RecordType.MEDICAL,
-        RecordType.GROOMING,
-        RecordType.VACCINATION,
-        RecordType.TRAINING,
-        RecordType.DIET
-    )
+    val sortOptions = listOf("All", "Pet", "Type", "Service")
+    var selectedSortOption by remember { mutableStateOf(sortOptions[0]) }
+    var sortDescending by remember { mutableStateOf(true) }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Pet Records") }) },
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(id = R.string.pet_records)) },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
+                actions = {
+                    // Sorting Dropdown
+                    SortDropdown(
+                        options = sortOptions,
+                        selectedOption = selectedSortOption,
+                        onOptionSelected = {
+                            selectedSortOption = it
+                            recordsViewModel.setSortOption(it)
+                        }
+                    )
+                    // Toggle for sorting by date
+                    IconButton(onClick = { sortDescending = !sortDescending }) {
+                        Icon(
+                            imageVector = if (sortDescending) Icons.Default.KeyboardArrowDown
+                                            else Icons.Default.KeyboardArrowUp,
+                            contentDescription = stringResource(id = R.string.sort_order_toggle),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+            )
+        },
         floatingActionButton = {
-            FloatingActionButton(onClick = { recordsViewModel.showAddDialog() }) {
-                Icon(Icons.Default.Add, contentDescription = "Add Record")
-            }
-        }
-    ) { padding ->
-        Column(modifier = Modifier.padding(padding)) {
-            TabRow(selectedTabIndex = selectedTabIndex) {
-                tabs.forEachIndexed { index, type ->
-                    Tab(
-                        selected = selectedTabIndex == index,
-                        onClick = { recordsViewModel.setSelectedTab(index) },
-                        text = { Text(type.name.replace("_", " ")) }
+            if(recordsState.records.isEmpty()) {
+                FloatingActionButton(onClick = { onNavigate(-1) },
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                    ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = stringResource(id = R.string.add_record),
                     )
                 }
             }
-            RecordContent(
-                navController = navController,
-                recordsViewModel = recordsViewModel,
-                records = recordsViewModel.getFilteredRecords()
-            )
         }
-    }
-
-    if (recordsState.isAddDialogVisible) {
-        AddRecordDialog(viewModel = recordsViewModel, recordType = tabs[selectedTabIndex])
-    }
-}
-
-@Composable
-fun AddRecordDialog(viewModel: RecordsViewModel, recordType: RecordType) {
-    var description by remember { mutableStateOf("") }
-    var date by remember { mutableStateOf("") }
-    val coroutineScope = rememberCoroutineScope()
-    val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    
-    val calendar = Calendar.getInstance()
-    val context = LocalContext.current
-
-    Dialog(onDismissRequest = { viewModel.hideAddDialog() }) {
-        Surface(
-            modifier = Modifier.padding(16.dp),
-            shape = MaterialTheme.shapes.medium
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .background(MaterialTheme.colorScheme.background)
         ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Text("Add New ${recordType.name.replace("_", " ")} Record", style = MaterialTheme.typography.titleLarge)
-                
-                TextField(
-                    value = description,
-                    onValueChange = { description = it },
-                    label = { Text("Description") }
-                )
-                
-                OutlinedButton(
-                    onClick = {
-                        Log.d("DatePicker", "Date Picker Dialog triggered")
-                        try {
-                            DatePickerDialog(
-                                context,
-                                { _, year, month, dayOfMonth ->
-                                    calendar.set(year, month, dayOfMonth)
-                                    date = dateFormat.format(calendar.time)
-                                },
-                                calendar.get(Calendar.YEAR),
-                                calendar.get(Calendar.MONTH),
-                                calendar.get(Calendar.DAY_OF_MONTH)
-                            ).show()
-                        } catch (e: Exception) {
-                            Log.e("DatePicker", "Error showing Date Picker Dialog", e)
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth()
+            if(recordsState.records.isEmpty()) {
+                Column(
+                    modifier = modifier
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(if (date.isNotBlank()) date else "Select Date")
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    TextButton(onClick = { viewModel.hideAddDialog() }) { Text("Cancel") }
-                    TextButton(onClick = {
-                        if (description.isNotBlank() && date.isNotBlank()) {
-                            try {
-                                val parsedDate = dateFormat.parse(date)
-                                coroutineScope.launch {
-                                    viewModel.addRecord(
-                                        Record(
-                                            type = recordType,
-                                            description = description,
-                                            date = parsedDate,
-                                            petIdFk = 0,
-                                            vendorIdFk = null,
-                                            cost = 0.0
-                                        )
-                                    )
-                                    viewModel.hideAddDialog()
-                                }
-                            } catch (e: Exception) {
-                                Log.e("AddRecord", "Error adding record", e)
-                            }
-                        }
-                    }) { Text("Save") }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun RecordContent(
-    navController: NavController,
-    recordsViewModel: RecordsViewModel,
-    records: List<Record>
-) {
-    if (records.isEmpty()) {
-        EmptyContent("No Records Available") {
-            recordsViewModel.showAddDialog()
-        }
-    } else {
-        LazyColumn(
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-        ) {
-            items(records) { record ->
-                ListItem(
-                    headlineContent = { Text(record.description ?: "No Description") },
-                    supportingContent = { Text("Date: ${record.date?.let { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(it) } ?: "No Date"}") },
-                    trailingContent = {
-                        IconButton(onClick = {
-                            recordsViewModel.deleteRecord(record)
-                        }) {
-                            Icon(Icons.Default.Delete, contentDescription = "Delete Record")
-                        }
-                    },
-                    modifier = Modifier.clickable {
-                        navController.navigate("record_detail_screen/${record.id}/${record.type.name}")
+                    Button(
+                        onClick = { onNavigate(-1) },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                            contentColor = MaterialTheme.colorScheme.onSecondary
+                        )
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.add_record),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
                     }
-                )
-                Divider()
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    items(recordsState.records) { record ->
+                        RecordRow(
+                            record = record,
+                            onDelete = { recordsViewModel.deleteRecord(record) },
+                            onNavigateDetail = {
+                                onNavigateDetail(record.id)
+                            }
+                        )
+                        HorizontalDivider(
+                            color = MaterialTheme.colorScheme.secondary,
+                            thickness = 1.dp,
+                            modifier = Modifier.padding(horizontal = 0.dp)
+                        )
+                    }
+                }
             }
         }
     }
@@ -193,16 +134,38 @@ fun RecordContent(
 
 
 @Composable
-fun EmptyContent(contentType: String, onAddClick: () -> Unit) {
-    Column(
+fun RecordRow(
+    record: Record,
+    onDelete: () -> Unit,
+    onNavigateDetail: () -> Unit
+) {
+    ListItem(
+        headlineContent = {
+            Text(
+                record.description ?: stringResource(id = R.string.no_description),
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        },
+        supportingContent = {
+            Text(
+                text = record.date?.let {
+                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(it)
+                } ?: stringResource(id = R.string.no_date),
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        },
+        trailingContent = {
+            IconButton(onClick = onDelete) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = stringResource(id = R.string.delete_record),
+                    tint = MaterialTheme.colorScheme.error
+                )
+            }
+        },
         modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("$contentType is empty")
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onAddClick) { Text("Add Record") }
-    }
+            .clickable { onNavigateDetail() }
+            .background(MaterialTheme.colorScheme.surface)
+    )
+    HorizontalDivider(color = MaterialTheme.colorScheme.outline)
 }

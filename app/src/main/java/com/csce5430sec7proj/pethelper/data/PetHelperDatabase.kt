@@ -7,15 +7,13 @@ import androidx.room.Room
 import androidx.room.TypeConverters
 import com.csce5430sec7proj.pethelper.data.daos.AppointmentDao
 import com.csce5430sec7proj.pethelper.data.daos.PetDao
-import com.csce5430sec7proj.pethelper.data.daos.PetImageDao
 import com.csce5430sec7proj.pethelper.data.entities.Pet
 import com.csce5430sec7proj.pethelper.data.daos.RecordDao
 import com.csce5430sec7proj.pethelper.data.daos.VaccinationDao
-import com.csce5430sec7proj.pethelper.data.daos.VendorDao
+import com.csce5430sec7proj.pethelper.data.daos.ServiceDao
 import com.csce5430sec7proj.pethelper.data.entities.Appointment
-import com.csce5430sec7proj.pethelper.data.entities.PetImage
 import com.csce5430sec7proj.pethelper.data.entities.Record
-import com.csce5430sec7proj.pethelper.data.entities.Vendor
+import com.csce5430sec7proj.pethelper.data.entities.Service
 import com.csce5430sec7proj.pethelper.data.entities.Vaccination
 
 /** PetHelperDatabase.kt
@@ -24,18 +22,15 @@ import com.csce5430sec7proj.pethelper.data.entities.Vaccination
 ** Add database entities below
 */
 
-// Tutorial https://www.youtube.com/watch?v=voMTReNRvUA
-
 @TypeConverters(value = [Converters::class])
-@Database(entities = [Pet::class, Record::class, Appointment::class, Vendor::class,
-                     PetImage::class, Vaccination::class],
-    version = 3, exportSchema = false)
+@Database(entities = [Pet::class, Record::class, Appointment::class, Service::class,
+                     Vaccination::class],
+    version = 4, exportSchema = false)
 abstract class PetHelperDatabase : RoomDatabase() {
     abstract fun petDao(): PetDao
     abstract fun recordDao(): RecordDao
     abstract fun appointmentDao(): AppointmentDao
-    abstract fun vendorDao(): VendorDao
-    abstract fun petImageDao(): PetImageDao
+    abstract fun serviceDao(): ServiceDao
     abstract fun vaccinationDao(): VaccinationDao
     // Add other DAOs as needed
 

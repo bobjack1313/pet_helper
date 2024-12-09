@@ -37,17 +37,4 @@ open class Converters {
     fun toAllergiesList(allergiesString: String?): List<String>? {
         return allergiesString?.split(",") ?: emptyList()
     }
-
-    // If you also need a list of titles, use the same methods or change the method names
-    //Titles are conflicting with allergies. TODO: Adapt to meet needs
-//    @TypeConverter
-//    fun fromTitlesList(titles: List<String>?): String? {
-//        return titles?.joinToString(",")
-//    }
-//
-//    @TypeConverter
-//    fun toTitlesList(titlesString: String?): List<String>? {
-//        return titlesString?.split(",") ?: emptyList()
-//    }
-
 }
