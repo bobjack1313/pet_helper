@@ -133,22 +133,22 @@ fun PetsScreen(
                 LazyColumn(
                     modifier = Modifier
                         .padding(0.dp)
-                ) {
-                    items(petsState.pets) { pet ->
-                        PetRow(
-                            petName = pet.name,
-                            petImagePath = pet.imagePath,
-                            onClick = {
-                                onNavigateDetail(pet.id)
-                            },
-                            petType = pet.type,
-                        )
-                        HorizontalDivider(
-                            color = MaterialTheme.colorScheme.secondary,
-                            thickness = 1.dp,
-                            modifier = Modifier.padding(horizontal = 0.dp)
-                        )
-                    }
+                ) {   items(petsState.pets) { pet ->
+                    PetRow(
+                        petName = pet.name,
+                        petImagePath = pet.imagePath,
+                        onClick = {
+                            onNavigateDetail(pet.id)
+                        },
+                        petType = pet.type,
+                    )
+                    HorizontalDivider(
+                        color = MaterialTheme.colorScheme.secondary,
+                        thickness = 1.dp,
+                        modifier = Modifier.padding(horizontal = 0.dp)
+                    )
+                }
+
                 }
             }
         }

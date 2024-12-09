@@ -1,11 +1,9 @@
-@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
-
 package com.csce5430sec7proj.pethelper.ui.records
 
 import android.app.DatePickerDialog
+import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -14,19 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.csce5430sec7proj.pethelper.data.entities.Record
-import com.csce5430sec7proj.pethelper.data.entities.RecordType
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import com.csce5430sec7proj.pethelper.R
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.csce5430sec7proj.pethelper.data.entities.Pet
-import com.csce5430sec7proj.pethelper.ui.pets.PetsViewModel
 
 
 @Composable
@@ -37,36 +29,34 @@ fun RecordDetailScreen(
     onNavigateBack: () -> Boolean,
 ) {
     val recordViewModel: RecordsViewModel = viewModel()
-    val descriptionState = remember { mutableStateOf("") }
-    val dateState = remember { mutableStateOf("") }
-    val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
     val recordState = recordViewModel.state.collectAsState().value
     val record: Record? = recordState.records.find { it.id == recordId }
+
+    // State variables to handle confirmations
+    var showDeleteConfirmation by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val descriptionState = remember { mutableStateOf("") }
+    val dateState = remember { mutableStateOf("") }
+
 
     // 日期格式化工具
     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     val calendar = Calendar.getInstance()
 
-    // State variables to handle confirmations
-    var showDeleteConfirmation by remember { mutableStateOf(false) }
-
-    // 使用 LaunchedEffect 加载单个记录
-//    LaunchedEffect(recordId) {
-//        val record = recordViewModel.getRecordById(recordId)
-//        if (record != null) {
-//            descriptionState.value = record.description ?: ""
-//            dateState.value = record.date?.let { dateFormat.format(it) } ?: ""
-//        }
-//    }
-
     Scaffold(
         modifier = modifier.fillMaxSize(),
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                record?.let { onNavigate(it.id) }
-            }) {
-                Icon(imageVector = Icons.Default.Edit, contentDescription = stringResource(id = R.string.Edit))
+            FloatingActionButton(
+                onClick = {
+                    record?.let { onNavigate(it.id) }
+                },
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = stringResource(id = R.string.update_record)
+                )
             }
         }
     ) { padding ->
@@ -78,38 +68,58 @@ fun RecordDetailScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // 描述输入框
-            TextField(
+            // Description input field
+            OutlinedTextField(
                 value = descriptionState.value,
                 onValueChange = { descriptionState.value = it },
-                label = { Text(stringResource(id = R.string.description_hint)) },
-                modifier = Modifier.fillMaxWidth()
+                label = { Text(text = stringResource(id = R.string.description_hint)) },
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedTextColor = MaterialTheme.colorScheme.onBackground,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onBackground
+                ),
+                textStyle = MaterialTheme.typography.bodyLarge
             )
 
-            // 日期选择按钮
-            Button(onClick = {
-                DatePickerDialog(
-                    context, { _, year, month, dayOfMonth ->
-                        calendar.set(year, month, dayOfMonth)
-                        dateState.value = dateFormat.format(calendar.time)
-                    },
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH),
-                    calendar.get(Calendar.DAY_OF_MONTH)
-                ).show()
-            }) {
-                Text(stringResource(id = R.string.select_date))
+            // Date selection button
+            Button(
+                onClick = {
+                    DatePickerDialog(
+                        context, { _, year, month, dayOfMonth ->
+                            calendar.set(year, month, dayOfMonth)
+                            dateState.value = dateFormat.format(calendar.time)
+                        },
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH)
+                    ).show()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
+            ) {
+                Text(
+                    text = stringResource(id = R.string.select_date),
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
 
-            // 显示选择的日期
+            // Display selected date
             Text(
                 text = stringResource(
                     id = R.string.selected_date,
-                    dateState.value ?: stringResource(id = R.string.unknown)
-                )
+                    dateState.value
+                ),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground
             )
 
-            // Deleting a record
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Delete record button
             Button(
                 onClick = {
                     record?.let {
@@ -117,10 +127,16 @@ fun RecordDetailScreen(
                         showDeleteConfirmation = true
                     }
                 },
-                modifier = Modifier.weight(1f).padding(start = 8.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onError
+                )
             ) {
-                Text(text = stringResource(id = R.string.delete))
+                Text(
+                    text = stringResource(id = R.string.delete),
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
         }
 
@@ -132,10 +148,18 @@ fun RecordDetailScreen(
                     showDeleteConfirmation = false
                 },
                 title = {
-                    Text(text = stringResource(id = R.string.confirm_delete_title))
+                    Text(
+                        text = stringResource(id = R.string.confirm_delete_title),
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
                 },
                 text = {
-                    Text(text = stringResource(id = R.string.confirm_delete_message_pet))
+                    Text(
+                        text = stringResource(id = R.string.confirm_delete_message_record),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
                 },
                 confirmButton = {
                     Button(
@@ -148,21 +172,32 @@ fun RecordDetailScreen(
                             // Dismiss the dialog
                             showDeleteConfirmation = false
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                            contentColor = MaterialTheme.colorScheme.onError
+                        )
                     ) {
-                        Text(text = stringResource(id = R.string.delete))
+                        Text(
+                            text = stringResource(id = R.string.delete),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
                     }
                 },
                 dismissButton = {
-                    Button(
+                    TextButton(
                         onClick = {
                             // Dismiss the dialog without deleting
                             showDeleteConfirmation = false
                         }
                     ) {
-                        Text(text = stringResource(id = R.string.cancel))
+                        Text(
+                            text = stringResource(id = R.string.cancel),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.primary
+                        )
                     }
-                }
+                },
+                containerColor = MaterialTheme.colorScheme.surface,
             )
         }
     }

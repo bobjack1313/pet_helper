@@ -1,5 +1,3 @@
-@file:OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
-
 package com.csce5430sec7proj.pethelper.ui.records
 
 import androidx.compose.foundation.background
@@ -26,6 +24,7 @@ import com.csce5430sec7proj.pethelper.R
 import com.csce5430sec7proj.pethelper.ui.components.SortDropdown
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecordsScreen(
     modifier: Modifier = Modifier,
@@ -34,7 +33,6 @@ fun RecordsScreen(
 ) {
     val recordsViewModel: RecordsViewModel = viewModel()
     val recordsState by recordsViewModel.state.collectAsState()
-    val records = recordsViewModel.getFilteredRecords()
     val sortOptions = listOf("All", "Pet", "Type", "Service")
     var selectedSortOption by remember { mutableStateOf(sortOptions[0]) }
     var sortDescending by remember { mutableStateOf(true) }
@@ -69,7 +67,7 @@ fun RecordsScreen(
             )
         },
         floatingActionButton = {
-            if (records.isNotEmpty()) {
+            if(recordsState.records.isEmpty()) {
                 FloatingActionButton(onClick = { onNavigate(-1) },
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary
@@ -88,7 +86,7 @@ fun RecordsScreen(
                 .padding(padding)
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            if (records.isEmpty()) {
+            if(recordsState.records.isEmpty()) {
                 Column(
                     modifier = modifier
                         .fillMaxSize(),
@@ -114,13 +112,18 @@ fun RecordsScreen(
                         .fillMaxSize()
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                 ) {
-                    items(records.sortedWith(recordsViewModel.getSortComparator(sortDescending))) { record ->
+                    items(recordsState.records) { record ->
                         RecordRow(
                             record = record,
                             onDelete = { recordsViewModel.deleteRecord(record) },
                             onNavigateDetail = {
-                                onNavigate(record.id)
+                                onNavigateDetail(record.id)
                             }
+                        )
+                        HorizontalDivider(
+                            color = MaterialTheme.colorScheme.secondary,
+                            thickness = 1.dp,
+                            modifier = Modifier.padding(horizontal = 0.dp)
                         )
                     }
                 }
