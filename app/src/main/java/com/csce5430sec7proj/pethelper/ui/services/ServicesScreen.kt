@@ -35,7 +35,8 @@ import com.csce5430sec7proj.pethelper.ui.pets.PetRow
 @Composable
 fun ServicesScreen(
     modifier: Modifier = Modifier,
-    onNavigate: (Int) -> Unit,
+    onNavigateEdit: (Int) -> Unit,
+    onNavigateContact: (Int) -> Unit,
     onNavigateDetail: (Int) -> Unit,
 ) {
     val viewModel: ServicesViewModel = viewModel()
@@ -59,7 +60,7 @@ fun ServicesScreen(
         },
         floatingActionButton = {
             if (servicesState.services.isNotEmpty()) {
-                FloatingActionButton(onClick = { onNavigate(-1) },
+                FloatingActionButton(onClick = { onNavigateEdit(-1) },
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
                     contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                 ) {
@@ -83,7 +84,7 @@ fun ServicesScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Button(
-                        onClick = { onNavigate(-1) },
+                        onClick = { onNavigateEdit(-1) },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
                             contentColor = MaterialTheme.colorScheme.onPrimary

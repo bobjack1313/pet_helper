@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.csce5430sec7proj.pethelper.ui.services.ContactServiceScreen
 import com.csce5430sec7proj.pethelper.ui.services.ServiceAddEditScreen
 import com.csce5430sec7proj.pethelper.ui.services.ServicesScreen
 import com.csce5430sec7proj.pethelper.ui.services.ServiceDetailsScreen
@@ -21,22 +22,29 @@ fun ServicesNavHost(modifier: Modifier = Modifier) {
         startDestination = "services_screen",
         modifier = modifier
     ) {
+        // Services Screen
         composable("services_screen") {
             ServicesScreen(
                 onNavigateDetail = { serviceId: Int ->
                     navController.navigate("service_detail_screen/$serviceId")
                 },
-                onNavigate = {
+                onNavigateEdit = {
                     navController.navigate("service_edit_screen")
+                },
+                onNavigateContact = { serviceId: Int ->
+                    navController.navigate("contact_service/$serviceId")
                 }
             )
         }
+
+        // Add/Edit Service Screen
         composable("service_edit_screen") {
             ServiceAddEditScreen(
                 serviceId = null,
-                onNavigateBack = { navController.popBackStack() },
+                onNavigateBack = { navController.popBackStack() }
             )
         }
+
         composable("service_edit_screen/{serviceId}") { backStackEntry ->
             val serviceId = backStackEntry.arguments?.getString("serviceId")?.toInt()
             ServiceAddEditScreen(
@@ -45,7 +53,7 @@ fun ServicesNavHost(modifier: Modifier = Modifier) {
             )
         }
 
-        // Pet Details Screen
+        // Service Details Screen
         composable(
             route = "service_detail_screen/{serviceId}",
             arguments = listOf(navArgument("serviceId") { type = NavType.IntType })
@@ -53,7 +61,24 @@ fun ServicesNavHost(modifier: Modifier = Modifier) {
             val serviceId = backStackEntry.arguments?.getInt("serviceId")
             ServiceDetailsScreen(
                 serviceId = serviceId,
-                onNavigate = { id -> navController.navigate("service_edit_screen/$id") },
+                onNavigateEdit = { id ->
+                    navController.navigate("service_edit_screen/$id")
+                },
+                onNavigateContact = { id ->
+                    navController.navigate("contact_service/$id")
+                },
+                onNavigateBack = { navController.popBackStack() },
+            )
+        }
+
+        // Contact Service Screen
+        composable(
+            route = "contact_service/{serviceId}",
+            arguments = listOf(navArgument("serviceId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val serviceId = backStackEntry.arguments?.getInt("serviceId")
+            ContactServiceScreen(
+                serviceId = serviceId,
                 onNavigateBack = { navController.popBackStack() }
             )
         }
